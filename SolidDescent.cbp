@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="SolidDescent" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug Win32">
+				<Option platforms="Windows;" />
+				<Option output="bin\Debug\SolidDescent" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Debug\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add library="mingw32" />
+					<Add library="SDLmain" />
+					<Add library="SDL.dll" />
+					<Add library="user32" />
+					<Add library="gdi32" />
+					<Add library="winmm" />
+					<Add library="dxguid" />
+					<Add library="opengl32" />
+					<Add library="glew32" />
+				</Linker>
+			</Target>
+			<Target title="Release Win32">
+				<Option platforms="Windows;" />
+				<Option output="bin\Release\SolidDescent" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Release\" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="mingw32" />
+					<Add library="SDLmain" />
+					<Add library="SDL.dll" />
+					<Add library="user32" />
+					<Add library="gdi32" />
+					<Add library="winmm" />
+					<Add library="dxguid" />
+					<Add library="opengl32" />
+					<Add library="glew32" />
+				</Linker>
+			</Target>
+			<Target title="Debug Linux">
+				<Option platforms="Unix;" />
+				<Option output="bin\Debug\SolidDescent" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Debug\" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add library="SDL" />
+					<Add library="GL" />
+					<Add library="GLEW" />
+				</Linker>
+			</Target>
+			<Target title="Release Linux">
+				<Option platforms="Unix;" />
+				<Option output="bin\Release\SolidDescent" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\Release\" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="SDL" />
+					<Add library="GL" />
+					<Add library="GLEW" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Linker>
+			<Add library="SDLmain" />
+		</Linker>
+		<Unit filename="src\core\engine.cpp" />
+		<Unit filename="src\core\engine.hpp" />
+		<Unit filename="src\core\exceptions.cpp" />
+		<Unit filename="src\core\exceptions.hpp" />
+		<Unit filename="src\game\client.cpp" />
+		<Unit filename="src\game\client.hpp" />
+		<Unit filename="src\game\entity.cpp" />
+		<Unit filename="src\game\entity.hpp" />
+		<Unit filename="src\game\input.cpp" />
+		<Unit filename="src\game\input.hpp" />
+		<Unit filename="src\game\server.cpp" />
+		<Unit filename="src\game\server.hpp" />
+		<Unit filename="src\lib\binaryio.cpp" />
+		<Unit filename="src\lib\binaryio.hpp" />
+		<Unit filename="src\lib\math.cpp" />
+		<Unit filename="src\lib\math.hpp" />
+		<Unit filename="src\main.cpp" />
+		<Unit filename="src\renderer\draw.cpp" />
+		<Unit filename="src\renderer\draw.hpp" />
+		<Unit filename="src\renderer\loadmodel.cpp" />
+		<Unit filename="src\renderer\loadmodel.hpp" />
+		<Unit filename="src\renderer\mesh.cpp" />
+		<Unit filename="src\renderer\mesh.hpp" />
+		<Unit filename="src\renderer\model.cpp" />
+		<Unit filename="src\renderer\model.hpp" />
+		<Unit filename="src\renderer\screen.cpp" />
+		<Unit filename="src\renderer\screen.hpp" />
+		<Unit filename="src\renderer\texture.cpp" />
+		<Unit filename="src\renderer\texture.hpp" />
+		<Unit filename="src\soliddescent.hpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

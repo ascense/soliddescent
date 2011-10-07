@@ -1,0 +1,10 @@
+SolidDescent Engine
+
+For now, the engine doesn't do much...
+
+As the engine repository doesn't contain any textures, you'll need to create a gfx directory in the project root, and add skybox textures ("sky_north.bmp", "sky_east.bmp", "sky_up.bmp"...) and a test texture ("test.bmp"). For now, the textures must be in 24-bit BGR bitmap format, and have a width and height be a power of two.
+
+Required libraries for compiling:
+ - libgl
+ - libglew
+ - libsdl
