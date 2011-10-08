@@ -22,22 +22,60 @@
 
 #include <string>
 
+#include "mesh.hpp"
+#include "../core/vector.hpp"
+#include "../core/exceptions.hpp"
+
 
 namespace SolidDescent { namespace Renderer {
 
 struct ModelTag {
+    std::string name;
+
+    Core::Vec3f origin;
+    Core::Vec3f x_axis;
+    Core::Vec3f y_axis;
+    Core::Vec3f z_axis;
 };
 
+
 struct ModelFrame {
+    std::string name;
+
+    float radius;
+    Core::Vec3f bounds_min;
+    Core::Vec3f bounds_max;
+    Core::Vec3f local_orig;
 };
+
 
 class Model {
 public:
     Model(std::string name);
     ~Model();
 
+    void set_frame_count(int len);
+    void set_tag_count(int len);
+    void set_mesh_count(int len);
+
+    int get_frame_count();
+    int get_tag_count();
+    int get_mesh_count();
+
+    ModelFrame** get_frames();
+    ModelTag** get_tags();
+    Mesh** get_meshes();
+
+    const std::string name;
+
 private:
-    std::string name;
+    ModelFrame** frames;
+    ModelTag** tags;
+    Mesh** meshes;
+
+    int frames_len;
+    int tags_len;
+    int meshes_len;
 };
 
 }} // SolidDescent::Renderer

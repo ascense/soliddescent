@@ -23,11 +23,18 @@
 #include <fstream>
 
 #include "../core/exceptions.hpp"
+#include "../core/vector.hpp"
 
 
 namespace SolidDescent { namespace Lib {
 
 int read_int(std::ifstream* stream);
+float read_float(std::ifstream* stream);
+std::string read_cstr(std::ifstream* stream, int maxlen);
+Core::Vec3f read_vec3f(std::ifstream* stream);
+
+void* read_val(std::ifstream* stream, std::size_t len);
+void check_stream(std::ifstream* stream);
 
 }} // SolidDescent::Lib
 

@@ -22,12 +22,100 @@
 
 namespace SolidDescent { namespace Renderer {
 
-Model::Model(std::string name) {
-    this->name = name;
+Model::Model(std::string name) : name(name), frames(NULL), tags(NULL), meshes(NULL) {}
+
+
+Model::~Model() {
+    if (frames) {
+        for (int i = 0; i < frames_len; ++i) {
+            if (frames[i])
+                delete frames[i];
+        }
+        delete frames;
+    }
+
+    if (tags) {
+        for (int i = 0; i < tags_len; ++i) {
+            if (tags[i])
+                delete tags[i];
+        }
+        delete tags;
+    }
+
+    if (meshes) {
+        for (int i = 0; i < meshes_len; ++i) {
+            if (meshes[i])
+                delete meshes[i];
+        }
+        delete meshes;
+    }
 }
 
 
-Model::~Model() {}
+void Model::set_frame_count(int len) {
+    if (frames != NULL)
+        throw Core::SolidDescentException("Cannot change the number of frames for a model");
+
+    frames = new ModelFrame*[len]();
+    frames_len = len;
+}
+
+
+void Model::set_tag_count(int len) {
+    if (tags != NULL)
+        throw Core::SolidDescentException("Cannot change the number of tags for a model");
+
+    tags = new ModelTag*[len]();
+    tags_len = len;
+}
+
+
+void Model::set_mesh_count(int len) {
+    if (meshes != NULL)
+        throw Core::SolidDescentException("Cannot change the number of meshes for a model");
+
+    meshes = new Mesh*[len]();
+    meshes_len = len;
+}
+
+
+int Model::get_frame_count() {
+    if (frames == NULL)
+        return -1;
+
+    return frames_len;
+}
+
+
+int Model::get_tag_count() {
+    if (tags == NULL)
+        return -1;
+
+    return tags_len;
+}
+
+
+int Model::get_mesh_count() {
+    if (meshes == NULL)
+        return -1;
+
+    return meshes_len;
+}
+
+
+ModelFrame** Model::get_frames() {
+    return frames;
+}
+
+
+ModelTag** Model::get_tags() {
+    return tags;
+}
+
+
+Mesh** Model::get_meshes() {
+    return meshes;
+}
 
 }} // SolidDescent::Renderer
 

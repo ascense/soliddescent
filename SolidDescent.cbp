@@ -91,6 +91,8 @@
 		<Unit filename="src\core\engine.hpp" />
 		<Unit filename="src\core\exceptions.cpp" />
 		<Unit filename="src\core\exceptions.hpp" />
+		<Unit filename="src\core\vector.cpp" />
+		<Unit filename="src\core\vector.hpp" />
 		<Unit filename="src\game\client.cpp" />
 		<Unit filename="src\game\client.hpp" />
 		<Unit filename="src\game\entity.cpp" />

@@ -17,35 +17,20 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RENDERER_LOADMODEL_HPP
-#define RENDERER_LOADMODEL_HPP
-
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <cmath>
-
-#include "../lib/binaryio.hpp"
-#include "../core/exceptions.hpp"
-#include "model.hpp"
-#include "mesh.hpp"
-
-// MD3-Specific Magic Numbers
-#define MD3_IDENT 0x33504449
-#define MD3_MAX_QPATH 64
+#ifndef CORE_VECTOR_HPP
+#define CORE_VECTOR_HPP
 
 
-namespace SolidDescent { namespace Renderer {
+namespace SolidDescent { namespace Core {
 
-enum ModelFmt {MOD_MD3};
+struct Vec3f {
+    float x, y, z;
 
+    Vec3f() {};
+    Vec3f(float x, float y, float z) : x(x), y(y), z(z) {};
+};
 
-Model* load_model(std::string path, ModelFmt fmt);
+}} // SolidDescent::Core
 
-Model* load_md3(std::ifstream* stream);
+#endif // CORE_VECTOR_HPP
 
-
-
-}} // SolidDescent::Renderer
-
-#endif // RENDERER_LOADMODEL_HPP

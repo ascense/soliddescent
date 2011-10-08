@@ -22,17 +22,59 @@
 
 namespace SolidDescent { namespace Lib {
 
-int read_int(std::ifstream* stream) {
-    if (!stream->good())
-        throw Core::SolidDescentException("Error reading binary data");
 
-    int retval;
-    stream->read((char*) &retval, 4);
-
-    if (stream->fail())
-        throw Core::SolidDescentException("Error reading binary data");
+void* read_val(std::ifstream* stream, std::size_t len) {
+    char* retval = new char[len];
+    stream->read((char*) retval, len);
 
     return retval;
+}
+
+
+int read_int(std::ifstream* stream) {
+    check_stream(stream);
+
+    return *((int*) (read_val(stream, sizeof(int))));
+}
+
+
+float read_float(std::ifstream* stream) {
+    check_stream(stream);
+
+    return *((float*) (read_val(stream, sizeof(float))));
+}
+
+
+std::string read_cstr(std::ifstream* stream, int maxlen) {
+    check_stream(stream);
+
+    char* strbuf = new char[maxlen + 1];
+    stream->read(strbuf, maxlen);
+    strbuf[maxlen] = '\n';
+
+    std::string str(strbuf);
+
+    delete[] strbuf;
+
+    return str;
+}
+
+
+Core::Vec3f read_vec3f(std::ifstream* stream) {
+    check_stream(stream);
+
+    Core::Vec3f vec;
+    vec.x = *(float*) (read_val(stream, sizeof(float)));
+    vec.y = *(float*) (read_val(stream, sizeof(float)));
+    vec.z = *(float*) (read_val(stream, sizeof(float)));
+
+    return vec;
+}
+
+
+void check_stream(std::ifstream* stream) {
+    if (!stream->good())
+        throw Core::SolidDescentException("Error reading binary data from file");
 }
 
 }} // SolidDescent::Lib
