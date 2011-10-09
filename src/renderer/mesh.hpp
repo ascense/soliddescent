@@ -22,6 +22,7 @@
 
 #include <string>
 #include <cmath>
+#include <GL/gl.h>
 
 #include "../core/vector.hpp"
 #include "../core/exceptions.hpp"
@@ -35,9 +36,10 @@ struct Shader {
 };
 
 
-struct Vertex : Core::Vec3f {
-    float s, t;
+struct Vertex {
+    Core::Vec3f pos;
     Core::Vec3f normal;
+    float s, t;
 
     void normal_from_latlong(double lat, double lng);
 };
@@ -57,15 +59,24 @@ public:
     int get_vertex_count();
 
     Shader** get_shaders();
-    int* get_triangles();
-    Vertex** get_vertices();
+    GLint* get_triangles();
+    GLfloat* get_vertex_array();
+
+    void put_vertex(Vertex* vert, int num);
+    Vertex* get_vertex(int num);
 
     const std::string name;
 
+    // Interleaved vertex array constants
+    static const int vertexarray_size = 8;
+    static const int vertexarray_vert_ofs = 0;
+    static const int vertexarray_normal_ofs = 3;
+    static const int vertexarray_texcoord_ofs = 6;
+
 private:
     Shader **shaders;
-    int *triangles;
-    Vertex **vertices;
+    GLint *triangles;
+    GLfloat *vertices;
 
     int shaders_len;
     int triangles_len;

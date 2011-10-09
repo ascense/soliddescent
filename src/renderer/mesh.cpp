@@ -41,13 +41,8 @@ Mesh::~Mesh() {
         delete shaders;
     }
 
-    if (vertices) {
-        for (int i = 0; i < vertices_len; ++i) {
-            if (vertices[i])
-                delete vertices[i];
-        }
-        delete vertices;
-    }
+    if (vertices)
+        delete [] vertices;
 
     if (triangles)
         delete [] triangles;
@@ -67,7 +62,7 @@ void Mesh::set_triangle_count(int len) {
     if (triangles != NULL)
         throw Core::SolidDescentException("Cannot change the number of triangles for a mesh");
 
-    triangles = new int[len];
+    triangles = new GLint[len];
     triangles_len = len;
 }
 
@@ -76,7 +71,7 @@ void Mesh::set_vertex_count(int len) {
     if (vertices != NULL)
         throw Core::SolidDescentException("Cannot change the number of vertices for a mesh");
 
-    vertices = new Vertex*[len]();
+    vertices = new GLfloat[len * vertexarray_size];
     vertices_len = len;
 }
 
@@ -110,13 +105,38 @@ Shader** Mesh::get_shaders() {
 }
 
 
-int* Mesh::get_triangles() {
+GLint* Mesh::get_triangles() {
     return triangles;
 }
 
 
-Vertex** Mesh::get_vertices() {
+GLfloat* Mesh::get_vertex_array() {
     return vertices;
+}
+
+
+void Mesh::put_vertex(Vertex* vert, int num) {
+    if (num < 0 || num >= vertices_len)
+        throw Core::SolidDescentException("Invalid vertex id assigned");
+
+    GLfloat *arr_v = &vertices[num * vertexarray_size];
+    vert->pos.store(&arr_v[vertexarray_vert_ofs]);
+    vert->normal.store(&arr_v[vertexarray_normal_ofs]);
+    arr_v[vertexarray_texcoord_ofs] = vert->s;
+    arr_v[vertexarray_texcoord_ofs + 1] = vert->t;
+}
+
+
+Vertex* Mesh::get_vertex(int num) {
+    Vertex* vert = new Vertex();
+
+    GLfloat *arr_v = &vertices[num * vertexarray_size];
+    vert->pos.read(arr_v + vertexarray_vert_ofs);
+    vert->normal.read(arr_v + vertexarray_normal_ofs);
+    vert->s = arr_v[vertexarray_texcoord_ofs];
+    vert->t = arr_v[vertexarray_texcoord_ofs + 1];
+
+    return vert;
 }
 
 }} // SolidDescent::Renderer

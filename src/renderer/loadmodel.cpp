@@ -159,31 +159,41 @@ Model* load_md3(std::ifstream* stream) {
             /** VERTICES (XYZNormal) **/
             stream->seekg(ofs_surface + ofs_vertices);
 
+            Vertex* vert;
             for (int j = 0; j < surf->get_vertex_count(); ++j) {
-                Vertex* vert = new Vertex();
-                surf->get_vertices()[j] = vert;
+                vert = new Vertex();
 
-                // Scale back vertex coordinates by a factor of 1 / 64
-                vert->x = *(float*) (Lib::read_val(stream, 2)) * (1.0f / 64);
-                vert->z = *(float*) (Lib::read_val(stream, 2)) * (1.0f / 64);
-                vert->y = *(float*) (Lib::read_val(stream, 2)) * (1.0f / 64);
+                try {
+                    // Scale back vertex coordinates by a factor of 1 / 64
+                    vert->pos.x = *(float*) (Lib::read_val(stream, 2)) * (1.0f / 64);
+                    vert->pos.z = *(float*) (Lib::read_val(stream, 2)) * (1.0f / 64);
+                    vert->pos.y = *(float*) (Lib::read_val(stream, 2)) * (1.0f / 64);
 
-                char lat, lng;
-                stream->read(&lat, 1);
-                stream->read(&lng, 1);
+                    char lat, lng;
+                    stream->read(&lat, 1);
+                    stream->read(&lng, 1);
 
-                vert->normal_from_latlong(
-                    (double) (lat * (2 * M_PI) / 255),
-                    (double) (lng * (2 * M_PI) / 255)
-                );
+                    vert->normal_from_latlong(
+                        (double) (lat * (2 * M_PI) / 255),
+                        (double) (lng * (2 * M_PI) / 255)
+                    );
+                } catch (std::exception& e) {
+                    delete vert;
+                    throw;
+                }
+
+                surf->put_vertex(vert, j);
+                delete vert;
             }
 
             /** TEXTURE-COORDS (ST) **/
             stream->seekg(ofs_surface + ofs_texcoords);
 
+            float *coord;
             for (int j = 0; j < surf->get_vertex_count(); ++j) {
-                surf->get_vertices()[j]->s = Lib::read_float(stream);
-                surf->get_vertices()[j]->t = Lib::read_float(stream);
+                coord = &surf->get_vertex_array()[j * Mesh::vertexarray_size + Mesh::vertexarray_texcoord_ofs];
+                coord[0] = Lib::read_float(stream);
+                coord[1] = Lib::read_float(stream);
             }
 
             // Calculate offset to next surface

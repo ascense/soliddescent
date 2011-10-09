@@ -17,24 +17,27 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CORE_VECTOR_HPP
-#define CORE_VECTOR_HPP
+#include "vector.hpp"
 
 
 namespace SolidDescent { namespace Core {
 
-struct Vec3f {
-    float x, y, z;
+Vec3f::Vec3f() : x(0), y(0), z(0) {}
+Vec3f::Vec3f(float* arr) : x(arr[0]), y(arr[1]), z(arr[2]) {};
+Vec3f::Vec3f(float x, float y, float z) : x(x), y(y), z(z) {};
 
-    Vec3f();
-    Vec3f(float* arr);
-    Vec3f(float x, float y, float z);
 
-    void read(float* arr);
-    void store(float* arr);
-};
+void Vec3f::read(float* arr) {
+    x = arr[0];
+    y = arr[1];
+    z = arr[2];
+}
+
+
+void Vec3f::store(float* arr) {
+    arr[0] = x;
+    arr[1] = y;
+    arr[2] = z;
+}
 
 }} // SolidDescent::Core
-
-#endif // CORE_VECTOR_HPP
-
