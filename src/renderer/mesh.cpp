@@ -38,7 +38,7 @@ Mesh::~Mesh() {
             if (shaders[i])
                 delete shaders[i];
         }
-        delete shaders;
+        delete [] shaders;
     }
 
     if (vertices)

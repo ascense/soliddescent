@@ -61,8 +61,7 @@ void Screen::draw_sky() {
 void Screen::draw_world() {
     game->test->use();
 
-    draw_cube(-8, -8, -25, 16, 16, 16);
-}
+    draw_cube(-8, -8, -25, 16, 16, 16);}
 
 
 void Screen::draw_2d() {
@@ -114,7 +113,7 @@ void Screen::set_gl_buffer(int col_bits, int depth_bits) {
 
 void Screen::check_gl_err() {
     GLenum err;
-    if (err = glGetError() != GL_NO_ERROR)
+    if ((err = glGetError()) != GL_NO_ERROR)
         throw Core::CriticalError("OpenGL Error, code " + err);
 }
 }} // SolidDescent::Renderer

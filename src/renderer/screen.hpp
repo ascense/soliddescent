@@ -36,6 +36,4 @@
     SDL_Surface *surface;
     int width, height;
     bool fullscreen;
-    double znear, zfar;
-
-    Texture* test_tex;};}} // SolidDescent::Renderer#endif // RENDERER_SCREEN_HPP
+    double znear, zfar;};}} // SolidDescent::Renderer#endif // RENDERER_SCREEN_HPP

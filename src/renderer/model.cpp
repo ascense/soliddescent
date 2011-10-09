@@ -31,7 +31,7 @@ Model::~Model() {
             if (frames[i])
                 delete frames[i];
         }
-        delete frames;
+        delete [] frames;
     }
 
     if (tags) {
@@ -39,7 +39,7 @@ Model::~Model() {
             if (tags[i])
                 delete tags[i];
         }
-        delete tags;
+        delete [] tags;
     }
 
     if (meshes) {
@@ -47,7 +47,7 @@ Model::~Model() {
             if (meshes[i])
                 delete meshes[i];
         }
-        delete meshes;
+        delete [] meshes;
     }
 }
 

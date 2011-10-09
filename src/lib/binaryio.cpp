@@ -23,25 +23,22 @@
 namespace SolidDescent { namespace Lib {
 
 
-void* read_val(std::ifstream* stream, std::size_t len) {
-    char* retval = new char[len];
-    stream->read((char*) retval, len);
-
-    return retval;
+void read_val(std::ifstream* stream, void* val, std::size_t len) {
+    stream->read((char*) val, len);
 }
 
 
 int read_int(std::ifstream* stream) {
-    check_stream(stream);
+    check_stream(stream);	int ret;	read_val(stream, &ret, sizeof(int));
 
-    return *((int*) (read_val(stream, sizeof(int))));
+    return ret;
 }
 
 
 float read_float(std::ifstream* stream) {
     check_stream(stream);
-
-    return *((float*) (read_val(stream, sizeof(float))));
+	float ret;	read_val(stream, &ret, sizeof(float));
+    return ret;
 }
 
 
@@ -63,10 +60,10 @@ std::string read_cstr(std::ifstream* stream, int maxlen) {
 Core::Vec3f read_vec3f(std::ifstream* stream) {
     check_stream(stream);
 
-    Core::Vec3f vec;
-    vec.x = *(float*) (read_val(stream, sizeof(float)));
-    vec.y = *(float*) (read_val(stream, sizeof(float)));
-    vec.z = *(float*) (read_val(stream, sizeof(float)));
+    Core::Vec3f vec;	float val;	read_val(stream, &val, sizeof(float));
+    vec.x = val;	read_val(stream, &val, sizeof(float));
+    vec.y = val;	read_val(stream, &val, sizeof(float));
+    vec.z = val;
 
     return vec;
 }

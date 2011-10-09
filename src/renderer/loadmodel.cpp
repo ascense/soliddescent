@@ -159,14 +159,14 @@ Model* load_md3(std::ifstream* stream) {
             /** VERTICES (XYZNormal) **/
             stream->seekg(ofs_surface + ofs_vertices);
 
-            Vertex* vert;
-            for (int j = 0; j < surf->get_vertex_count(); ++j) {
-                vert = &surf->get_vertex_array()[j];
-
-                // Scale back vertex coordinates by a factor of 1 / 64
-                vert->pos.x = *(short*) (Lib::read_val(stream, 2)) * (1.0f / 64);
-                vert->pos.z = *(short*) (Lib::read_val(stream, 2)) * (1.0f / 64);
-                vert->pos.y = *(short*) (Lib::read_val(stream, 2)) * (1.0f / 64);
+            Vertex* vert;			short x, y, z;			for (int j = 0; j < surf->get_vertex_count(); ++j) {
+                vert = &surf->get_vertex_array()[j];				Lib::read_val(stream, &x, 2);
+                Lib::read_val(stream, &y, 2);
+                Lib::read_val(stream, &z, 2);				// Convert to opengl-space by swapping z and y axes
+                vert->pos.x = x;
+                vert->pos.z = y;
+                vert->pos.y = z;
+                // Scale back vertex coordinates by a factor of 1 / 64				vert->pos.scale(1.0f / 64);
 
                 char lat, lng;
                 stream->read(&lat, 1);
