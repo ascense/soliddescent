@@ -110,4 +110,11 @@ void Screen::set_gl_buffer(int col_bits, int depth_bits) {
     if (zfar != far)
         zfar = far;
     GLdouble aspect = (double) (height) / (double) (width);    GLdouble top = std::tan(fov * M_PI / 360.0) * near * aspect;    GLdouble right = std::tan(fov * M_PI / 360.0) * near;    glMatrixMode(GL_PROJECTION);    glLoadIdentity();    glFrustum(-right, right, -top, top, near, far);    glMatrixMode(GL_MODELVIEW);}// Set the default shading optionsvoid Screen::set_shading() {    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);    glShadeModel(GL_SMOOTH);
-    glClearColor(0, 0, 0, 0);    glEnable(GL_TEXTURE_2D);    glEnable(GL_DEPTH_TEST);    glDepthMask(GL_TRUE);    glEnable(GL_CULL_FACE);    glCullFace(GL_BACK);}}} // SolidDescent::Renderer
+    glClearColor(0, 0, 0, 0);    glEnable(GL_TEXTURE_2D);    glEnable(GL_DEPTH_TEST);    glDepthMask(GL_TRUE);    glEnable(GL_CULL_FACE);    glCullFace(GL_BACK);}
+
+void Screen::check_gl_err() {
+    GLenum err;
+    if (err = glGetError() != GL_NO_ERROR)
+        throw Core::CriticalError("OpenGL Error, code " + err);
+}
+}} // SolidDescent::Renderer

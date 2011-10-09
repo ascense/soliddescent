@@ -22,6 +22,30 @@
 
 namespace SolidDescent { namespace Renderer {
 
+void draw_model(Model* mod) {
+    for (int i = 0; i < mod->get_mesh_count(); ++i)
+        draw_mesh(mod->get_meshes()[i]);
+}
+
+
+void draw_mesh(Mesh* mesh) {
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexPointer(3, GL_FLOAT, sizeof(Vertex), &mesh->get_vertex_array()[0].pos.x);
+
+    glEnableClientState(GL_NORMAL_ARRAY);
+    glNormalPointer(GL_FLOAT, sizeof(Vertex), &mesh->get_vertex_array()[0].normal.x);
+
+    //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    //glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), &mesh->get_vertex_array()[0].s);
+
+    glDrawElements(GL_TRIANGLES, mesh->get_index_count(), GL_UNSIGNED_SHORT, mesh->get_indices());
+
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+
 void draw_cube(int x, int y, int z, int width, int height, int depth) {
     int TEX_SCALE = 16;
 

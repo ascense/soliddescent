@@ -51,35 +51,26 @@ public:
     ~Mesh();
 
     void set_shader_count(int len);
-    void set_triangle_count(int len);
+    void set_index_count(int len);
     void set_vertex_count(int len);
 
     int get_shader_count();
-    int get_triangle_count();
+    int get_index_count();
     int get_vertex_count();
 
     Shader** get_shaders();
-    GLint* get_triangles();
-    GLfloat* get_vertex_array();
-
-    void put_vertex(Vertex* vert, int num);
-    Vertex* get_vertex(int num);
+    GLushort* get_indices();
+    Vertex* get_vertex_array();
 
     const std::string name;
 
-    // Interleaved vertex array constants
-    static const int vertexarray_size = 8;
-    static const int vertexarray_vert_ofs = 0;
-    static const int vertexarray_normal_ofs = 3;
-    static const int vertexarray_texcoord_ofs = 6;
-
 private:
     Shader **shaders;
-    GLint *triangles;
-    GLfloat *vertices;
+    GLushort *indices;
+    Vertex *vertices;
 
     int shaders_len;
-    int triangles_len;
+    int indices_len;
     int vertices_len;
 };
 

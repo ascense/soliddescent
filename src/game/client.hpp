@@ -25,8 +25,6 @@
 #include "input.hpp"
 #include "entity.hpp"
 #include "../renderer/texture.hpp"
-#include "../renderer/model.hpp"
-#include "../renderer/loadmodel.hpp"
 
 
 namespace SolidDescent { namespace Game {

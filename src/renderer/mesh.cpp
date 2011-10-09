@@ -24,12 +24,12 @@ namespace SolidDescent { namespace Renderer {
 
 void Vertex::normal_from_latlong(double lat, double lng) {
     this->normal.x = (float) (std::cos(lat) * std::sin(lng));
-    this->normal.y = (float) (std::cos(lng));
-    this->normal.z = (float) (std::sin(lat) * std::sin(lng));
+    this->normal.y = (float) (std::sin(lat) * std::sin(lng));
+    this->normal.z = (float) (std::cos(lng));
 }
 
 
-Mesh::Mesh(std::string name) : name(name), shaders(NULL), triangles(NULL), vertices(NULL) {}
+Mesh::Mesh(std::string name) : name(name), shaders(NULL), indices(NULL), vertices(NULL) {}
 
 
 Mesh::~Mesh() {
@@ -44,8 +44,8 @@ Mesh::~Mesh() {
     if (vertices)
         delete [] vertices;
 
-    if (triangles)
-        delete [] triangles;
+    if (indices)
+        delete [] indices;
 }
 
 
@@ -58,12 +58,12 @@ void Mesh::set_shader_count(int len) {
 }
 
 
-void Mesh::set_triangle_count(int len) {
-    if (triangles != NULL)
-        throw Core::SolidDescentException("Cannot change the number of triangles for a mesh");
+void Mesh::set_index_count(int len) {
+    if (indices != NULL)
+        throw Core::SolidDescentException("Cannot change the number of indices for a mesh");
 
-    triangles = new GLint[len];
-    triangles_len = len;
+    indices = new GLushort[len];
+    indices_len = len;
 }
 
 
@@ -71,7 +71,7 @@ void Mesh::set_vertex_count(int len) {
     if (vertices != NULL)
         throw Core::SolidDescentException("Cannot change the number of vertices for a mesh");
 
-    vertices = new GLfloat[len * vertexarray_size];
+    vertices = new Vertex[len];
     vertices_len = len;
 }
 
@@ -84,11 +84,11 @@ int Mesh::get_shader_count() {
 }
 
 
-int Mesh::get_triangle_count() {
-    if (triangles == NULL)
+int Mesh::get_index_count() {
+    if (indices == NULL)
         return -1;
 
-    return triangles_len;
+    return indices_len;
 }
 
 
@@ -105,38 +105,13 @@ Shader** Mesh::get_shaders() {
 }
 
 
-GLint* Mesh::get_triangles() {
-    return triangles;
+GLushort* Mesh::get_indices() {
+    return indices;
 }
 
 
-GLfloat* Mesh::get_vertex_array() {
+Vertex* Mesh::get_vertex_array() {
     return vertices;
-}
-
-
-void Mesh::put_vertex(Vertex* vert, int num) {
-    if (num < 0 || num >= vertices_len)
-        throw Core::SolidDescentException("Invalid vertex id assigned");
-
-    GLfloat *arr_v = &vertices[num * vertexarray_size];
-    vert->pos.store(&arr_v[vertexarray_vert_ofs]);
-    vert->normal.store(&arr_v[vertexarray_normal_ofs]);
-    arr_v[vertexarray_texcoord_ofs] = vert->s;
-    arr_v[vertexarray_texcoord_ofs + 1] = vert->t;
-}
-
-
-Vertex* Mesh::get_vertex(int num) {
-    Vertex* vert = new Vertex();
-
-    GLfloat *arr_v = &vertices[num * vertexarray_size];
-    vert->pos.read(arr_v + vertexarray_vert_ofs);
-    vert->normal.read(arr_v + vertexarray_normal_ofs);
-    vert->s = arr_v[vertexarray_texcoord_ofs];
-    vert->t = arr_v[vertexarray_texcoord_ofs + 1];
-
-    return vert;
 }
 
 }} // SolidDescent::Renderer

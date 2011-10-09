@@ -21,7 +21,7 @@
     server = new Game::Server();
     client = new Game::Client();
 
-    try {        screen = new Renderer::Screen(client, 1680, 1050, true);
+    try {        screen = new Renderer::Screen(client, 800, 600, false);
     } catch (std::exception& e) {
         delete server;
         delete client;

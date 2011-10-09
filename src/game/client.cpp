@@ -41,15 +41,16 @@ Client::Client() {
 
 
 Client::~Client() {
-    delete input;
-    delete player;
+    delete test;
 
     for (int i = 0; i < 6; ++i) {
         if (skybox[i] != NULL)
             delete skybox[i];
     }
-    delete [] skybox;
-    delete test;
+    delete [] skybox;
+
+    delete input;
+    delete player;
 }
 
 

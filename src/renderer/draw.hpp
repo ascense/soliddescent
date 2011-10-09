@@ -23,10 +23,14 @@
 #include <GL/gl.h>
 
 #include "texture.hpp"
+#include "model.hpp"
+#include "mesh.hpp"
 
 
 namespace SolidDescent { namespace Renderer {
 
+void draw_model(Model* mod);
+void draw_mesh(Mesh* mesh);
 void draw_cube(int x, int y, int z, int width, int height, int depth);
 void draw_skybox(Texture** skybox);
 

@@ -131,7 +131,7 @@ Model* load_md3(std::ifstream* stream) {
             // Surface "header" data
             surf->set_shader_count(Lib::read_int(stream));
             surf->set_vertex_count(Lib::read_int(stream));
-            surf->set_triangle_count(Lib::read_int(stream) * 3);
+            surf->set_index_count(Lib::read_int(stream) * 3);
 
             int ofs_triangles = Lib::read_int(stream);
             int ofs_shaders = Lib::read_int(stream);
@@ -153,47 +153,37 @@ Model* load_md3(std::ifstream* stream) {
             /** TRIANGLES **/
             stream->seekg(ofs_surface + ofs_triangles);
 
-            for (int j = 0; j < surf->get_triangle_count(); ++j)
-                surf->get_triangles()[j] = Lib::read_int(stream);
+            for (int j = 0; j < surf->get_index_count(); ++j)
+                surf->get_indices()[j] = (unsigned int) (Lib::read_int(stream));
 
             /** VERTICES (XYZNormal) **/
             stream->seekg(ofs_surface + ofs_vertices);
 
             Vertex* vert;
             for (int j = 0; j < surf->get_vertex_count(); ++j) {
-                vert = new Vertex();
+                vert = &surf->get_vertex_array()[j];
 
-                try {
-                    // Scale back vertex coordinates by a factor of 1 / 64
-                    vert->pos.x = *(float*) (Lib::read_val(stream, 2)) * (1.0f / 64);
-                    vert->pos.z = *(float*) (Lib::read_val(stream, 2)) * (1.0f / 64);
-                    vert->pos.y = *(float*) (Lib::read_val(stream, 2)) * (1.0f / 64);
+                // Scale back vertex coordinates by a factor of 1 / 64
+                vert->pos.x = *(short*) (Lib::read_val(stream, 2)) * (1.0f / 64);
+                vert->pos.z = *(short*) (Lib::read_val(stream, 2)) * (1.0f / 64);
+                vert->pos.y = *(short*) (Lib::read_val(stream, 2)) * (1.0f / 64);
 
-                    char lat, lng;
-                    stream->read(&lat, 1);
-                    stream->read(&lng, 1);
+                char lat, lng;
+                stream->read(&lat, 1);
+                stream->read(&lng, 1);
 
-                    vert->normal_from_latlong(
-                        (double) (lat * (2 * M_PI) / 255),
-                        (double) (lng * (2 * M_PI) / 255)
-                    );
-                } catch (std::exception& e) {
-                    delete vert;
-                    throw;
-                }
-
-                surf->put_vertex(vert, j);
-                delete vert;
+                vert->normal_from_latlong(
+                    (double) (lat * (2 * M_PI) / 255),
+                    (double) (lng * (2 * M_PI) / 255)
+                );
             }
 
             /** TEXTURE-COORDS (ST) **/
             stream->seekg(ofs_surface + ofs_texcoords);
 
-            float *coord;
             for (int j = 0; j < surf->get_vertex_count(); ++j) {
-                coord = &surf->get_vertex_array()[j * Mesh::vertexarray_size + Mesh::vertexarray_texcoord_ofs];
-                coord[0] = Lib::read_float(stream);
-                coord[1] = Lib::read_float(stream);
+                surf->get_vertex_array()[j].s = Lib::read_float(stream);
+                surf->get_vertex_array()[j].t = Lib::read_float(stream);
             }
 
             // Calculate offset to next surface

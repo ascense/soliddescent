@@ -29,7 +29,9 @@
 
     void draw_sky();
     void draw_world();
-    void draw_2d();
+    void draw_2d();
+
+    void check_gl_err();
     Game::Client *game;
     SDL_Surface *surface;
     int width, height;
