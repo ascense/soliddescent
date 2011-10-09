@@ -17,11 +17,17 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../soliddescent.hpp"namespace SolidDescent { namespace Core {Engine::Engine() {
+#include "../soliddescent.hpp"
+
+
+namespace SolidDescent { namespace Core {
+
+Engine::Engine() {
     server = new Game::Server();
     client = new Game::Client();
 
-    try {        screen = new Renderer::Screen(client, 800, 600, false);
+    try {
+        screen = new Renderer::Screen(client, 800, 600, false);
     } catch (std::exception& e) {
         delete server;
         delete client;
@@ -32,19 +38,34 @@
     client->set_mouse_sensitivity(5);
     screen->set_fov(90);
 
-    frame_time = SDL_GetTicks();}Engine::~Engine() {
+    frame_time = SDL_GetTicks();
+}
+
+
+Engine::~Engine() {
     delete client;
     delete server;
-    delete screen;}void Engine::run() {
+
+    delete screen;
+}
+
+
+void Engine::run() {
     double delta;
 
     while (client->is_running()) {
         // Timing
         delta = handle_timing();
-        // Server
+
+        // Server
         if (server->is_running())
-            server->update(delta);        // Client
-        client->update(delta);        screen->draw();    }}
+            server->update(delta);
+
+        // Client
+        client->update(delta);
+        screen->draw();
+    }
+}
 
 
 double Engine::handle_timing() {
@@ -66,4 +87,6 @@ void Engine::set_maxfps(int fps) {
         frame_millis = -1;
     else
         frame_millis = 1000 / fps;
-}}} // SolidDescent::Core
+}
+
+}} // SolidDescent::Core

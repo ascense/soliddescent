@@ -17,17 +17,39 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CORE_ENGINE_HPP#define CORE_ENGINE_HPP#include "exceptions.hpp"#include "../renderer/screen.hpp"
+#ifndef CORE_ENGINE_HPP
+#define CORE_ENGINE_HPP
+
+#include "exceptions.hpp"
+#include "../renderer/screen.hpp"
 #include "../game/server.hpp"
-#include "../game/client.hpp"namespace SolidDescent { namespace Core {class Engine {public:    Engine();    ~Engine();    void run();
+#include "../game/client.hpp"
+
+
+namespace SolidDescent { namespace Core {
+
+class Engine {
+public:
+    Engine();
+    ~Engine();
+
+    void run();
     void set_maxfps(int fps);
 
     // only sleep if more than 5 ms until next frame
-    static const int MIN_SLEEP_INTERVAL = 5;private:
+    static const int MIN_SLEEP_INTERVAL = 5;
+
+private:
     double handle_timing();
-    Renderer::Screen *screen;
+
+    Renderer::Screen *screen;
     Game::Server *server;
     Game::Client *client;
 
     long frame_time;
-    int frame_millis;};}} // SolidDescent::Core#endif // CORE_ENGINE_HPP
+    int frame_millis;
+};
+
+}} // SolidDescent::Core
+
+#endif // CORE_ENGINE_HPP

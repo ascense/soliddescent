@@ -38,7 +38,9 @@ void Vec3f::store(float* arr) {
     arr[0] = x;
     arr[1] = y;
     arr[2] = z;
-}
+}
+
+
 void Vec3f::scale(float scalar) {
     x *= scalar;
     y *= scalar;

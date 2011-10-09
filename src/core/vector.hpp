@@ -31,7 +31,8 @@ struct Vec3f {
     Vec3f(float x, float y, float z);
 
     void read(float* arr);
-    void store(float* arr);
+    void store(float* arr);
+
     void scale(float scalar);
 };
 

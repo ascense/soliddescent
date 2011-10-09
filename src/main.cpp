@@ -17,14 +17,30 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <iostream>#include "soliddescent.hpp"int main(int argc, char *argv[]) {
+#include <iostream>
+
+#include "soliddescent.hpp"
+
+
+int main(int argc, char *argv[]) {
     SolidDescent::Core::Engine *engine = NULL;
     int ecode = 0;
-    try {
-        engine = new SolidDescent::Core::Engine();        engine->run();
-    } catch (SolidDescent::Core::CriticalError& e) {        std::cout << "Critical Error!" << std::endl;        std::cout << e.what() << std::endl;
-        ecode = 7;    } catch (SolidDescent::Core::SolidDescentException& e) {        std::cout << "Internal Error!" << std::endl;        std::cout << e.what() << std::endl;
-        ecode = 5;    }
-    if (engine)
+
+    try {
+        engine = new SolidDescent::Core::Engine();
+        engine->run();
+    } catch (SolidDescent::Core::CriticalError& e) {
+        std::cout << "Critical Error!" << std::endl;
+        std::cout << e.what() << std::endl;
+        ecode = 7;
+    } catch (SolidDescent::Core::SolidDescentException& e) {
+        std::cout << "Internal Error!" << std::endl;
+        std::cout << e.what() << std::endl;
+        ecode = 5;
+    }
+
+    if (engine)
         delete engine;
-    return ecode;}
+
+    return ecode;
+}
