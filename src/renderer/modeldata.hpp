@@ -17,72 +17,69 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RENDERER_MESH_HPP
-#define RENDERER_MESH_HPP
+#ifndef RENDERER_MODELDATA_HPP
+#define RENDERER_MODELDATA_HPP
 
 #include <string>
-#include <cmath>
-#include <GL/glew.h>
 
-#include "texture.hpp"
+#include "mesh.hpp"
 #include "../core/vector.hpp"
 #include "../core/exceptions.hpp"
 
 
 namespace SolidDescent { namespace Renderer {
 
-// The size of this should stay a multiple of 32-bits
-struct Vertex {
-    Core::Vec3f pos;
-    Core::Vec3f normal;
-    float s, t;
-
-    void normal_from_latlong(double lat, double lng);
-} __attribute__((packed, aligned(4)));
-
-
-struct Shader {
+struct ModelTag {
     std::string name;
-    int index;
 
-    Texture *tex;
-
-    Shader() : tex(NULL) {}
-    ~Shader();
+    Core::Vec3f origin;
+    Core::Vec3f x_axis;
+    Core::Vec3f y_axis;
+    Core::Vec3f z_axis;
 };
 
 
-class Mesh {
+struct ModelFrame {
+    std::string name;
+
+    float radius;
+    Core::Vec3f bounds_min;
+    Core::Vec3f bounds_max;
+    Core::Vec3f local_orig;
+};
+
+
+class ModelData {
 public:
-    Mesh(std::string name);
-    ~Mesh();
+    ModelData(std::string name);
+    ~ModelData();
 
-    void set_shader_count(int len);
-    void set_index_count(int len);
-    void set_vertex_count(int len);
+    void set_frame_count(int len);
+    void set_tag_count(int len);
+    void set_mesh_count(int len);
 
-    int get_shader_count();
-    int get_index_count();
-    int get_vertex_count();
+    int get_frame_count();
+    int get_tag_count();
+    int get_mesh_count();
 
-    GLuint* get_vbo();
-    void load_vbo();
-    void unload_vbo();
+    ModelFrame** get_frames();
+    ModelTag** get_tags();
+    Mesh** get_meshes();
 
     const std::string name;
 
-    Shader **shaders;
-    GLushort *indices;
-    Vertex *vertices;
-
 private:
-    GLuint *vbo_handle;
+    ModelFrame **frames;
+    ModelTag **tags;
+    Mesh **meshes;
 
-    int shaders_len;
-    int indices_len;
-    int vertices_len;
+    int frames_len;
+    int tags_len;
+    int meshes_len;
+
+    GLuint *vbo_handle;
 };
 
 }} // SolidDescent::Renderer
 
-#endif // RENDERER_MESH_HPP
+#endif // RENDERER_MODELDATA_HPP

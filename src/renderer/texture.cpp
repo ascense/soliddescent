@@ -22,77 +22,65 @@
 
 namespace SolidDescent { namespace Renderer {
 
-Texture::Texture(std::string path, const TextureFmt* format) {
-    this->path = path;
-    fmt = format;
-
-    // assume that the texture is OK for loading
-    is_available = true;
-
-    handle = 0;
-}
+Texture::Texture(std::string path, const TextureFmt* fmt)
+    : Core::Resource(path), data(NULL), internal_fmt(fmt) {}
 
 
 Texture::~Texture() {
-    unload();
+    if (data != NULL)
+        delete data;
 }
 
 
-bool Texture::load() {
-    SDL_Surface* surf = SDL_LoadBMP(path.c_str());
-    if (!surf)
-        return false;
+void Texture::load() throw (Core::SolidDescentException) {
+    if (data != NULL)
+        return;
 
-    // verify that both width & height are powers of 2
-    if ((surf->w & (surf->w - 1)) != 0 || (surf->h & (surf->h - 1)) != 0) {
-        SDL_FreeSurface(surf);
-        return false;
+    try {
+        data = load_texture(path.c_str(), internal_fmt);
+    } catch (Core::SolidDescentException &e) {
+        available = false;
+        throw;
     }
 
-    // verify that the texture is in 24-bpp format
-    if (surf->format->BitsPerPixel != 24) {
-        SDL_FreeSurface(surf);
-        return false;
-    }
-
-    width = surf->w;
-    height = surf->h;
-
-    glGenTextures(1, &handle);
-    glBindTexture(GL_TEXTURE_2D, handle);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, fmt->wrap);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, fmt->wrap);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, fmt->filter);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, fmt->filter);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, fmt->fmt, width, height, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, surf->pixels);
-
-    SDL_FreeSurface(surf);
-
-    return true;
+    available = true;
 }
 
 
 void Texture::unload() {
-    if (handle > 0)
-        glDeleteTextures(1, &handle);
+    if (data != NULL) {
+        delete data;
+        data = NULL;
+    }
+
+    available = true;
 }
 
 
 void Texture::use() {
-    if (handle <= 0)
-        is_available = load();
+    ondemand_load();
 
-    if (handle > 0)
-        glBindTexture(GL_TEXTURE_2D, handle);
-    else
-        glBindTexture(GL_TEXTURE_2D, 0);
+    if (data != NULL)
+        data->use();
 }
 
 
-bool Texture::available() {
-    return ((handle > 0) || is_available);
+TextureData* Texture::get_data() {
+    ondemand_load();
+
+    return data;
+}
+
+
+void Texture::ondemand_load() {
+    if (data != NULL || !available)
+        return;
+
+    try {
+        load();
+    } catch (Core::SolidDescentException &e) {
+        Lib::log_error(&e, path);
+    }
 }
 
 }} // SolidDescent::Renderer

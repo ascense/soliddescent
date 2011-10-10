@@ -36,7 +36,7 @@ Engine::Engine() {
 
     set_maxfps(120);
     client->set_mouse_sensitivity(5);
-    screen->set_fov(90);
+    // screen->set_fov(90);
 
     frame_time = SDL_GetTicks();
 }

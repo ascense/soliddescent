@@ -27,7 +27,7 @@ namespace SolidDescent { namespace Game {
 
 enum GameKey {
     K_FORWARD, K_BACK, K_LEFT, K_RIGHT,
-    K_USE, K_JUMP,
+    K_USE, K_JUMP, K_CROUCH,
     K_QUIT,
     K_MAP_LENGTH // Hack for getting amount of GameKey values
 };

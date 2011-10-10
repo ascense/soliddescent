@@ -87,14 +87,14 @@ void Screen::draw_sky() {
 
 
 void Screen::draw_world() {
-    game->test->use();
-
+    game->test_tex->use();
     draw_cube(-8, -8, -25, 16, 16, 16);
+
+    draw_model(game->test_mod);
 }
 
 
-void Screen::draw_2d() {
-}
+void Screen::draw_2d() {}
 
 
 // Change the screen geometry and fullscreen mode

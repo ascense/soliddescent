@@ -17,71 +17,49 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "loadmodel.hpp"
+#include "modelfmt.hpp"
+
+// MD3-Specific Magic Numbers
+#define MD3_IDENT 0x33504449
+#define MD3_MAX_QPATH 64
 
 
 namespace SolidDescent { namespace Renderer {
 
-Model* load_model(std::string path, ModelFmt fmt) {
-    Model* mod;
-    std::ifstream stream;
+ModelData* load_md3(std::ifstream* stream) {
+    ModelData* md3 = NULL;
 
-    stream.open(path.c_str(), std::ios::binary);
-    if (!stream.good()) {
-        stream.close();
-        return NULL;
-    }
+    struct MD3Header {
+        int32_t magic;
+        int32_t version;
+        char name[MD3_MAX_QPATH];
+        int32_t flags;
 
-    switch (fmt) {
-        case MOD_MD3:
-            mod = load_md3(&stream);
-            break;
+        int32_t num_frames;
+        int32_t num_tags;
+        int32_t num_surfaces;
+        int32_t num_skins;
 
-        default:
-            mod = NULL;
-            break;
-    }
-
-    stream.close();
-
-    return mod;
-}
-
-
-Model* load_md3(std::ifstream* stream) {
-    Model* md3 = NULL;
+        int32_t ofs_frames;
+        int32_t ofs_tags;
+        int32_t ofs_surfaces;
+    } __attribute__((packed)) header;
 
     try {
         /** HEADER **/
+        stream->read((char*) &header, sizeof(header));
+
         // Check header "magic number"
-        if (Lib::read_int(stream) != MD3_IDENT)
+        if (header.magic != MD3_IDENT)
             return NULL;
 
-        // Ignore md3 version number
-        stream->seekg(4, std::ios::cur);
-
-        // Read model name
-        md3 = new Model(Lib::read_cstr(stream, MD3_MAX_QPATH));
-        if (!md3)
-            return NULL;
-
-        // Ignore md3 flags
-        stream->seekg(4, std::ios::cur);
-
-        // The real "meat" of the header :)
-        md3->set_frame_count(Lib::read_int(stream));
-        md3->set_tag_count(Lib::read_int(stream));
-        md3->set_mesh_count(Lib::read_int(stream));
-
-        // Ignore skin count
-        stream->seekg(4, std::ios::cur);
-
-        int ofs_frames = Lib::read_int(stream);
-        int ofs_tags = Lib::read_int(stream);
-        int ofs_surfaces = Lib::read_int(stream);
+        md3 = new ModelData(std::string(header.name));
+        md3->set_frame_count(header.num_frames);
+        md3->set_tag_count(header.num_tags);
+        md3->set_mesh_count(header.num_surfaces);
 
         /** FRAMES **/
-        stream->seekg(ofs_frames);
+        stream->seekg(header.ofs_frames);
 
         for (int i = 0; i < md3->get_frame_count(); ++i) {
             ModelFrame *frame = new ModelFrame();
@@ -95,7 +73,7 @@ Model* load_md3(std::ifstream* stream) {
         }
 
         /** TAGS **/
-        stream->seekg(ofs_tags);
+        stream->seekg(header.ofs_tags);
 
         for (int i = 0; i < md3->get_tag_count(); ++i) {
             ModelTag *tag = new ModelTag();
@@ -109,7 +87,7 @@ Model* load_md3(std::ifstream* stream) {
         }
 
         /** SURFACES **/
-        long ofs_surface = ofs_surfaces;
+        long ofs_surface = header.ofs_surfaces;
 
         for (int i = 0; i < md3->get_mesh_count(); ++i) {
             stream->seekg(ofs_surface);
@@ -144,17 +122,19 @@ Model* load_md3(std::ifstream* stream) {
 
             for (int j = 0; j < surf->get_shader_count(); ++j) {
                 Shader* shader = new Shader();
-                surf->get_shaders()[j] = shader;
+                surf->shaders[j] = shader;
 
                 shader->name = Lib::read_cstr(stream, MD3_MAX_QPATH);
                 shader->index = Lib::read_int(stream);
+
+                shader->tex = new Texture(shader->name, &TEX_RGB);
             }
 
             /** TRIANGLES **/
             stream->seekg(ofs_surface + ofs_triangles);
 
             for (int j = 0; j < surf->get_index_count(); ++j)
-                surf->get_indices()[j] = (unsigned int) (Lib::read_int(stream));
+                surf->indices[j] = (unsigned int) (Lib::read_int(stream));
 
             /** VERTICES (XYZNormal) **/
             stream->seekg(ofs_surface + ofs_vertices);
@@ -162,7 +142,7 @@ Model* load_md3(std::ifstream* stream) {
             Vertex* vert;
             short x, y, z;
             for (int j = 0; j < surf->get_vertex_count(); ++j) {
-                vert = &surf->get_vertex_array()[j];
+                vert = &surf->vertices[j];
 
                 Lib::read_val(stream, &x, 2);
                 Lib::read_val(stream, &y, 2);
@@ -190,8 +170,8 @@ Model* load_md3(std::ifstream* stream) {
             stream->seekg(ofs_surface + ofs_texcoords);
 
             for (int j = 0; j < surf->get_vertex_count(); ++j) {
-                surf->get_vertex_array()[j].s = Lib::read_float(stream);
-                surf->get_vertex_array()[j].t = Lib::read_float(stream);
+                surf->vertices[j].s = Lib::read_float(stream);
+                surf->vertices[j].t = 1.0f - Lib::read_float(stream);
             }
 
             // Calculate offset to next surface

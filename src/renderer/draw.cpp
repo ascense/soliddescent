@@ -22,7 +22,11 @@
 
 namespace SolidDescent { namespace Renderer {
 
-void draw_model(Model* mod) {
+void draw_model(Model* model) {
+    ModelData* mod = model->get_data();
+    if (mod == NULL)
+        return;
+
     for (int i = 0; i < mod->get_mesh_count(); ++i)
         draw_mesh(mod->get_meshes()[i]);
 }
@@ -30,15 +34,34 @@ void draw_model(Model* mod) {
 
 void draw_mesh(Mesh* mesh) {
     glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, sizeof(Vertex), &mesh->get_vertex_array()[0].pos.x);
-
     glEnableClientState(GL_NORMAL_ARRAY);
-    glNormalPointer(GL_FLOAT, sizeof(Vertex), &mesh->get_vertex_array()[0].normal.x);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-    //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    //glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), &mesh->get_vertex_array()[0].s);
+    if (mesh->shaders[0]->tex != NULL) {
+        mesh->shaders[0]->tex->use();
+    }
 
-    glDrawElements(GL_TRIANGLES, mesh->get_index_count(), GL_UNSIGNED_SHORT, mesh->get_indices());
+    GLuint* vbo;
+    if ((vbo = mesh->get_vbo()) != NULL) {
+        glBindBufferARB(GL_ARRAY_BUFFER_ARB, vbo[0]);
+        glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, vbo[1]);
+
+        glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (void*) offsetof(Vertex, pos));
+        glNormalPointer(GL_FLOAT, sizeof(Vertex), (void*) offsetof(Vertex, normal));
+        glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), (void*) offsetof(Vertex, s));
+
+        glDrawElements(GL_TRIANGLES, mesh->get_index_count(), GL_UNSIGNED_SHORT, 0);
+
+        glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+        glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
+    } else {
+        // Fallback; render mesh as vertex array
+        glVertexPointer(3, GL_FLOAT, sizeof(Vertex), &mesh->vertices[0].pos.x);
+        glNormalPointer(GL_FLOAT, sizeof(Vertex), &mesh->vertices[0].normal.x);
+        glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), &mesh->vertices[0].s);
+
+        glDrawElements(GL_TRIANGLES, mesh->get_index_count(), GL_UNSIGNED_SHORT, mesh->indices);
+    }
 
     glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     glDisableClientState(GL_NORMAL_ARRAY);
@@ -126,98 +149,74 @@ void draw_skybox(Texture** skybox) {
     glDisable(GL_BLEND);
 
     // North
-    if (skybox[0] != NULL && skybox[0]->available()) {
+    if (skybox[0] != NULL && skybox[0]->is_available()) {
         skybox[0]->use();
 
         glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);
-        glVertex3i(-4, 4, -4);
-        glTexCoord2f(0, 1);
-        glVertex3i(-4, -4, -4);
-        glTexCoord2f(1, 1);
-        glVertex3i(4, -4, -4);
-        glTexCoord2f(1, 0);
-        glVertex3i(4, 4, -4);
+        glTexCoord2f(0, 0); glVertex3i(-4, -4, -4);
+        glTexCoord2f(1, 0); glVertex3i(4, -4, -4);
+        glTexCoord2f(1, 1); glVertex3i(4, 4, -4);
+        glTexCoord2f(0, 1); glVertex3i(-4, 4, -4);
         glEnd();
     }
 
     // East
-    if (skybox[1] != NULL && skybox[1]->available()) {
+    if (skybox[1] != NULL && skybox[1]->is_available()) {
         skybox[1]->use();
 
         glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);
-        glVertex3i(4, 4, -4);
-        glTexCoord2f(0, 1);
-        glVertex3i(4, -4, -4);
-        glTexCoord2f(1, 1);
-        glVertex3i(4, -4, 4);
-        glTexCoord2f(1, 0);
-        glVertex3i(4, 4, 4);
+        glTexCoord2f(0, 0); glVertex3i(4, -4, -4);
+        glTexCoord2f(1, 0); glVertex3i(4, -4, 4);
+        glTexCoord2f(1, 1); glVertex3i(4, 4, 4);
+        glTexCoord2f(0, 1); glVertex3i(4, 4, -4);
         glEnd();
     }
 
     // South
-    if (skybox[2] != NULL && skybox[2]->available()) {
+    if (skybox[2] != NULL && skybox[2]->is_available()) {
         skybox[2]->use();
 
         glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);
-        glVertex3i(4, 4, 4);
-        glTexCoord2f(0, 1);
-        glVertex3i(4, -4, 4);
-        glTexCoord2f(1, 1);
-        glVertex3i(-4, -4, 4);
-        glTexCoord2f(1, 0);
-        glVertex3i(-4, 4, 4);
+        glTexCoord2f(0, 0); glVertex3i(4, -4, 4);
+        glTexCoord2f(1, 0); glVertex3i(-4, -4, 4);
+        glTexCoord2f(1, 1); glVertex3i(-4, 4, 4);
+        glTexCoord2f(0, 1); glVertex3i(4, 4, 4);
         glEnd();
     }
 
     // West
-    if (skybox[3] != NULL && skybox[3]->available()) {
+    if (skybox[3] != NULL && skybox[3]->is_available()) {
         skybox[3]->use();
 
         glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);
-        glVertex3i(-4, 4, 4);
-        glTexCoord2f(0, 1);
-        glVertex3i(-4, -4, 4);
-        glTexCoord2f(1, 1);
-        glVertex3i(-4, -4, -4);
-        glTexCoord2f(1, 0);
-        glVertex3i(-4, 4, -4);
+        glTexCoord2f(0, 0); glVertex3i(-4, -4, 4);
+        glTexCoord2f(1, 0); glVertex3i(-4, -4, -4);
+        glTexCoord2f(1, 1); glVertex3i(-4, 4, -4);
+        glTexCoord2f(0, 1); glVertex3i(-4, 4, 4);
         glEnd();
     }
 
     // Top
-    if (skybox[4] != NULL && skybox[4]->available()) {
+    if (skybox[4] != NULL && skybox[4]->is_available()) {
         skybox[4]->use();
 
         glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);
-        glVertex3i(4, 4, -4);
-        glTexCoord2f(0, 1);
-        glVertex3i(4, 4, 4);
-        glTexCoord2f(1, 1);
-        glVertex3i(-4, 4, 4);
-        glTexCoord2f(1, 0);
-        glVertex3i(-4, 4, -4);
+        glTexCoord2f(0, 0); glVertex3i(4, 4, 4);
+        glTexCoord2f(1, 0); glVertex3i(-4, 4, 4);
+        glTexCoord2f(1, 1); glVertex3i(-4, 4, -4);
+        glTexCoord2f(0, 1); glVertex3i(4, 4, -4);
         glEnd();
     }
 
     // Bottom
-    if (skybox[5] != NULL && skybox[5]->available()) {
+    if (skybox[5] != NULL && skybox[5]->is_available()) {
         skybox[5]->use();
 
         glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);
-        glVertex3i(4, -4, 4);
-        glTexCoord2f(0, 1);
-        glVertex3i(4, -4, -4);
-        glTexCoord2f(1, 1);
-        glVertex3i(-4, -4, -4);
-        glTexCoord2f(1, 0);
-        glVertex3i(-4, -4, 4);
+        glTexCoord2f(0, 0); glVertex3i(4, -4, -4);
+        glTexCoord2f(1, 0); glVertex3i(-4, -4, -4);
+        glTexCoord2f(1, 1); glVertex3i(-4, -4, 4);
+        glTexCoord2f(0, 1); glVertex3i(4, -4, 4);
         glEnd();
     }
 

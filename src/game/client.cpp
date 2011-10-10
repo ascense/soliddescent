@@ -27,6 +27,7 @@ Client::Client() {
 
     input = new Input();
     player = new Entity(0, 0, 0);
+    player->speed = 32;
 
     skybox = new Renderer::Texture*[6];
     skybox[0] = new Renderer::Texture("./gfx/sky_north.bmp", &Renderer::TEX_SKY);
@@ -36,7 +37,8 @@ Client::Client() {
     skybox[4] = new Renderer::Texture("./gfx/sky_up.bmp", &Renderer::TEX_SKY);
     skybox[5] = new Renderer::Texture("./gfx/sky_down.bmp", &Renderer::TEX_SKY);
 
-    test = new Renderer::Texture("./gfx/test.bmp", &Renderer::TEX_RGB);
+    test_tex = new Renderer::Texture("./gfx/test.bmp", &Renderer::TEX_RGB);
+    test_mod = new Renderer::Model("./models/test.md3");
 }
 
 
@@ -99,10 +101,10 @@ void Client::handle_input(double delta) {
     if (input->key_down(K_RIGHT))
         player->strafe(delta * -player->speed);
 
-    if (input->key_down(K_JUMP)) {
-        player->heading = 0;
-        player->pitch = 0;
-    }
+    if (input->key_down(K_JUMP))
+        player->y += delta * player->speed;
+    if (input->key_down(K_CROUCH))
+        player->y += delta * -player->speed;
 
     if (input->key_down(K_QUIT))
         running = false;

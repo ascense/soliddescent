@@ -20,10 +20,11 @@
 #ifndef RENDERER_DRAW_HPP
 #define RENDERER_DRAW_HPP
 
-#include <GL/gl.h>
+#include <GL/glew.h>
 
 #include "texture.hpp"
 #include "model.hpp"
+#include "modeldata.hpp"
 #include "mesh.hpp"
 
 

@@ -20,62 +20,29 @@
 #ifndef RENDERER_MODEL_HPP
 #define RENDERER_MODEL_HPP
 
-#include <string>
+#include "../core/resource.hpp"
+#include "../lib/logging.hpp"
 
-#include "mesh.hpp"
-#include "../core/vector.hpp"
-#include "../core/exceptions.hpp"
+#include "modeldata.hpp"
+#include "formats/modelfmt.hpp"
 
 
 namespace SolidDescent { namespace Renderer {
 
-struct ModelTag {
-    std::string name;
-
-    Core::Vec3f origin;
-    Core::Vec3f x_axis;
-    Core::Vec3f y_axis;
-    Core::Vec3f z_axis;
-};
-
-
-struct ModelFrame {
-    std::string name;
-
-    float radius;
-    Core::Vec3f bounds_min;
-    Core::Vec3f bounds_max;
-    Core::Vec3f local_orig;
-};
-
-
-class Model {
+class Model : public Core::Resource {
 public:
-    Model(std::string name);
+    Model(std::string path) : Core::Resource(path), data(NULL) {};
     ~Model();
 
-    void set_frame_count(int len);
-    void set_tag_count(int len);
-    void set_mesh_count(int len);
+    void load() throw (Core::SolidDescentException);
+    void unload();
 
-    int get_frame_count();
-    int get_tag_count();
-    int get_mesh_count();
-
-    ModelFrame** get_frames();
-    ModelTag** get_tags();
-    Mesh** get_meshes();
-
-    const std::string name;
+    ModelData* get_data();
 
 private:
-    ModelFrame** frames;
-    ModelTag** tags;
-    Mesh** meshes;
+    void ondemand_load();
 
-    int frames_len;
-    int tags_len;
-    int meshes_len;
+    ModelData *data;
 };
 
 }} // SolidDescent::Renderer

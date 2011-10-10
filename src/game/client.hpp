@@ -25,6 +25,7 @@
 #include "input.hpp"
 #include "entity.hpp"
 #include "../renderer/texture.hpp"
+#include "../renderer/texturedata.hpp"
 
 
 namespace SolidDescent { namespace Game {
@@ -44,7 +45,8 @@ public:
 
     Renderer::Texture** get_skybox();
 
-    Renderer::Texture *test;
+    Renderer::Texture *test_tex;
+    Renderer::Model *test_mod;
 
 private:
     void handle_input(double delta);

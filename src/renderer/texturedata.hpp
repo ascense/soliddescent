@@ -17,52 +17,36 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef RENDERER_SCREEN_HPP
-#define RENDERER_SCREEN_HPP
+#ifndef RENDERER_TEXTUREDATA_HPP
+#define RENDERER_TEXTUREDATA_HPP
 
-#include <cmath>
+#include <string>
 #include <GL/glew.h>
-#include <SDL/SDL.h>
-
-#include <cstdio>
-
-#include "../core/exceptions.hpp"
-#include "../game/client.hpp"
-#include "draw.hpp"
 
 
 namespace SolidDescent { namespace Renderer {
 
-class Screen {
-public:
-    Screen(Game::Client* client, int width, int height, bool fullscreen) throw (Core::SolidDescentException);
-    ~Screen();
+struct TextureFmt {
+    GLenum fmt;
+    GLint wrap;
+    GLint filter;
+};
 
-    void draw();
+const TextureFmt TEX_RGB = {GL_RGB, GL_REPEAT, GL_LINEAR};
+const TextureFmt TEX_RGBA = {GL_RGBA, GL_REPEAT, GL_LINEAR};
+const TextureFmt TEX_SKY = {GL_RGB, GL_CLAMP, GL_NEAREST};
 
-    void set_fov(int fov);
 
-private:
-    void set_gl_buffer(int col_bits, int depth_bits);
-    bool set_video_mode(int width, int height, int bpp, bool fullscreen);
-    void set_projection(int fov, double near, double far);
-    void set_shading();
+struct TextureData {
+    TextureData(GLuint handle, int width, int height);
+    ~TextureData();
 
-    void draw_sky();
-    void draw_world();
-    void draw_2d();
+    void use();
 
-    void check_gl_err();
-
-    Game::Client *game;
-
-    SDL_Surface *surface;
-
-    int width, height;
-    bool fullscreen;
-    double znear, zfar;
+    const GLuint handle;
+    const int width, height;
 };
 
 }} // SolidDescent::Renderer
 
-#endif // RENDERER_SCREEN_HPP
+#endif // RENDERER_TEXTUREDATA_HPP

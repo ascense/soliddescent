@@ -91,6 +91,7 @@
 		<Unit filename="src\core\engine.hpp" />
 		<Unit filename="src\core\exceptions.cpp" />
 		<Unit filename="src\core\exceptions.hpp" />
+		<Unit filename="src\core\resource.hpp" />
 		<Unit filename="src\core\vector.cpp" />
 		<Unit filename="src\core\vector.hpp" />
 		<Unit filename="src\game\client.cpp" />
@@ -103,21 +104,32 @@
 		<Unit filename="src\game\server.hpp" />
 		<Unit filename="src\lib\binaryio.cpp" />
 		<Unit filename="src\lib\binaryio.hpp" />
+		<Unit filename="src\lib\logging.cpp" />
+		<Unit filename="src\lib\logging.hpp" />
 		<Unit filename="src\lib\math.cpp" />
 		<Unit filename="src\lib\math.hpp" />
 		<Unit filename="src\main.cpp" />
 		<Unit filename="src\renderer\draw.cpp" />
 		<Unit filename="src\renderer\draw.hpp" />
-		<Unit filename="src\renderer\loadmodel.cpp" />
-		<Unit filename="src\renderer\loadmodel.hpp" />
+		<Unit filename="src\renderer\formats\model_md3.cpp" />
+		<Unit filename="src\renderer\formats\modelfmt.cpp" />
+		<Unit filename="src\renderer\formats\modelfmt.hpp" />
+		<Unit filename="src\renderer\formats\texture_bmp.cpp" />
+		<Unit filename="src\renderer\formats\texture_tga.cpp" />
+		<Unit filename="src\renderer\formats\texturefmt.cpp" />
+		<Unit filename="src\renderer\formats\texturefmt.hpp" />
 		<Unit filename="src\renderer\mesh.cpp" />
 		<Unit filename="src\renderer\mesh.hpp" />
 		<Unit filename="src\renderer\model.cpp" />
 		<Unit filename="src\renderer\model.hpp" />
+		<Unit filename="src\renderer\modeldata.cpp" />
+		<Unit filename="src\renderer\modeldata.hpp" />
 		<Unit filename="src\renderer\screen.cpp" />
 		<Unit filename="src\renderer\screen.hpp" />
 		<Unit filename="src\renderer\texture.cpp" />
 		<Unit filename="src\renderer\texture.hpp" />
+		<Unit filename="src\renderer\texturedata.cpp" />
+		<Unit filename="src\renderer\texturedata.hpp" />
 		<Unit filename="src\soliddescent.hpp" />
 		<Extensions>
 			<code_completion />

@@ -86,6 +86,7 @@ void Input::load_keymap() {
 
     keymap[K_USE] = SDLK_f;
     keymap[K_JUMP] = SDLK_SPACE;
+    keymap[K_CROUCH] = SDLK_LCTRL;
 
     keymap[K_QUIT] = SDLK_ESCAPE;
 }

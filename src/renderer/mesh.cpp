@@ -29,10 +29,19 @@ void Vertex::normal_from_latlong(double lat, double lng) {
 }
 
 
-Mesh::Mesh(std::string name) : name(name), shaders(NULL), indices(NULL), vertices(NULL) {}
+Shader::~Shader() {
+    if (tex != NULL)
+        delete tex;
+}
+
+
+Mesh::Mesh(std::string name)
+        : name(name), shaders(NULL), indices(NULL), vertices(NULL), vbo_handle(NULL) {}
 
 
 Mesh::~Mesh() {
+    unload_vbo();
+
     if (shaders) {
         for (int i = 0; i < shaders_len; ++i) {
             if (shaders[i])
@@ -100,18 +109,52 @@ int Mesh::get_vertex_count() {
 }
 
 
-Shader** Mesh::get_shaders() {
-    return shaders;
+GLuint* Mesh::get_vbo() {
+    if (!vbo_handle)
+        load_vbo();
+
+    if (vbo_handle[0] == 0)
+        return NULL;
+
+    return vbo_handle;
 }
 
 
-GLushort* Mesh::get_indices() {
-    return indices;
+void Mesh::load_vbo() {
+    if (vbo_handle) {
+        if (vbo_handle[0] == 0)
+            return;
+
+        unload_vbo();
+    }
+
+    vbo_handle = new GLuint[2];
+    if (!GLEW_ARB_vertex_buffer_object) {
+        vbo_handle[0] = 0;
+        return;
+    }
+
+    glGenBuffersARB(2, vbo_handle);
+
+    glBindBufferARB(GL_ARRAY_BUFFER_ARB, vbo_handle[0]);
+    glBufferDataARB(GL_ARRAY_BUFFER_ARB, vertices_len * sizeof(Vertex), vertices, GL_STATIC_DRAW_ARB);
+    glBindBufferARB(GL_ARRAY_BUFFER_ARB, 0);
+
+    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, vbo_handle[1]);
+    glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, indices_len * sizeof(GLushort), indices, GL_STATIC_DRAW_ARB);
+    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, 0);
 }
 
 
-Vertex* Mesh::get_vertex_array() {
-    return vertices;
+void Mesh::unload_vbo() {
+    if (!vbo_handle)
+        return;
+
+    if (vbo_handle[0] > 0) {
+        glDeleteBuffersARB(2, vbo_handle);
+    }
+
+    delete [] vbo_handle;
 }
 
 }} // SolidDescent::Renderer

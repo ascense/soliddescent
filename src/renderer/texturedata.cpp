@@ -17,26 +17,26 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CORE_VECTOR_HPP
-#define CORE_VECTOR_HPP
+#include "texturedata.hpp"
 
 
-namespace SolidDescent { namespace Core {
+namespace SolidDescent { namespace Renderer {
 
-struct Vec3f {
-    float x, y, z;
+TextureData::TextureData(GLuint handle, int width, int height)
+        : handle(handle), width(width), height(height) {}
 
-    Vec3f();
-    Vec3f(float* arr);
-    Vec3f(float x, float y, float z);
 
-    void read(float* arr);
-    void store(float* arr);
+TextureData::~TextureData() {
+    if (handle > 0)
+        glDeleteTextures(1, &handle);
+}
 
-    void scale(float scalar);
-} __attribute__((packed, aligned(4)));
 
-}} // SolidDescent::Core
+void TextureData::use() {
+   if (handle > 0)
+        glBindTexture(GL_TEXTURE_2D, handle);
+    else
+        glBindTexture(GL_TEXTURE_2D, 0);
+}
 
-#endif // CORE_VECTOR_HPP
-
+}} // SolidDescent::Renderer

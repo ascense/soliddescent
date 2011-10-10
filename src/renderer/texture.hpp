@@ -20,44 +20,32 @@
 #ifndef RENDERER_TEXTURE_HPP
 #define RENDERER_TEXTURE_HPP
 
-#include <string>
-#include <GL/gl.h>
-#include <GL/glext.h>
-#include <SDL/SDL.h>
+#include "../core/resource.hpp"
+#include "../lib/logging.hpp"
+
+#include "texturedata.hpp"
+#include "formats/texturefmt.hpp"
 
 
 namespace SolidDescent { namespace Renderer {
 
-struct TextureFmt {
-    GLenum fmt;
-    GLint wrap;
-    GLint filter;
-};
-
-const TextureFmt TEX_RGB = {GL_RGB, GL_REPEAT, GL_LINEAR};
-const TextureFmt TEX_RGBA = {GL_RGBA, GL_REPEAT, GL_LINEAR};
-const TextureFmt TEX_SKY = {GL_RGB, GL_CLAMP, GL_NEAREST};
-
-
-class Texture {
+class Texture : public Core::Resource {
 public:
-    Texture(std::string path, const TextureFmt* format);
+    Texture(std::string path, const TextureFmt* fmt);
     ~Texture();
 
-    bool load();
+    void load() throw (Core::SolidDescentException);
     void unload();
 
     void use();
-    bool available();
+
+    TextureData* get_data();
 
 private:
-    int width, height;
-    std::string path;
+    void ondemand_load();
 
-    bool is_available;
-
-    const TextureFmt* fmt;
-    GLuint handle;
+    TextureData *data;
+    const TextureFmt *internal_fmt;
 };
 
 }} // SolidDescent::Renderer

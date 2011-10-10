@@ -17,26 +17,30 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CORE_VECTOR_HPP
-#define CORE_VECTOR_HPP
+#ifndef CORE_RESOURCE_HPP
+#define CORE_RESOURCE_HPP
+
+#include <string>
+
+#include "exceptions.hpp"
 
 
 namespace SolidDescent { namespace Core {
 
-struct Vec3f {
-    float x, y, z;
+class Resource {
+public:
+    Resource(std::string path) : path(path), available(true) {};
 
-    Vec3f();
-    Vec3f(float* arr);
-    Vec3f(float x, float y, float z);
+    bool is_available() {return available;};
 
-    void read(float* arr);
-    void store(float* arr);
+    virtual void load() throw (SolidDescentException) = 0;
+    virtual void unload() = 0;
 
-    void scale(float scalar);
-} __attribute__((packed, aligned(4)));
+protected:
+    std::string path;
+    bool available;
+};
 
 }} // SolidDescent::Core
 
-#endif // CORE_VECTOR_HPP
-
+#endif // CORE_RESOURCE_HPP

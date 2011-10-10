@@ -17,26 +17,19 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CORE_VECTOR_HPP
-#define CORE_VECTOR_HPP
+#include "logging.hpp"
 
 
-namespace SolidDescent { namespace Core {
+namespace SolidDescent { namespace Lib {
 
-struct Vec3f {
-    float x, y, z;
+void log_error(Core::SolidDescentException* e) {
+    std::cout << "Error: " << e->what() << std::endl;
+}
 
-    Vec3f();
-    Vec3f(float* arr);
-    Vec3f(float x, float y, float z);
 
-    void read(float* arr);
-    void store(float* arr);
+void log_error(Core::SolidDescentException* e, std::string source) {
+    std::cout << source << ": ";
+    log_error(e);
+}
 
-    void scale(float scalar);
-} __attribute__((packed, aligned(4)));
-
-}} // SolidDescent::Core
-
-#endif // CORE_VECTOR_HPP
-
+}} // SolidDescent::Lib
