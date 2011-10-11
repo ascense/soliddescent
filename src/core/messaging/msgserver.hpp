@@ -17,45 +17,48 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CORE_ENGINE_HPP
-#define CORE_ENGINE_HPP
+#ifndef CORE_MSGSERVER_HPP
+#define CORE_MSGSERVER_HPP
 
-#include "exceptions.hpp"
-#include "messaging/message.hpp"
-#include "messaging/msginterface.hpp"
-#include "messaging/msgserver.hpp"
-
-#include "../renderer/screen.hpp"
-#include "../game/server.hpp"
-#include "../game/client.hpp"
+#include "message.hpp"
+#include "msginterface.hpp"
 
 
 namespace SolidDescent { namespace Core {
 
-class Engine : public MsgInterface {
+class MsgInterface;
+
+
+struct MsgCallback {
+    MsgInterface *cb;
+    MsgCallback *next;
+
+    MsgCallback(MsgInterface* cb) : cb(cb), next(NULL) {}
+    ~MsgCallback();
+};
+
+
+class MsgServer {
 public:
-    Engine();
-    ~Engine();
+    static MsgServer* get_inst();
+    static void destroy();
 
-    void run();
+    void post(Message* msg);
+    void process();
 
-    void callback(Message* msg);
+    void add_listener(MessageType msg_type, MsgInterface* cb);
+    void drop_listener(MessageType msg_type, MsgInterface* cb);
 
-    // only sleep if more than 5 ms until next frame
-    static const int MIN_SLEEP_INTERVAL = 5;
+protected:
+    MsgServer();
+    ~MsgServer();
 
-private:
-    void set_maxfps(int fps);
-    double handle_timing();
-
-    Renderer::Screen *screen;
-    Game::Server *server;
-    Game::Client *client;
-
-    long frame_time;
-    int frame_millis;
+    static MsgServer *singleton;
+    MsgCallback **cb_array;
+    Message *msg_head;
+    Message *msg_tail;
 };
 
 }} // SolidDescent::Core
 
-#endif // CORE_ENGINE_HPP
+#endif // CORE_MSGSERVER_HPP

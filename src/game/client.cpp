@@ -39,6 +39,8 @@ Client::Client() {
 
     test_tex = new Renderer::Texture("./gfx/test.bmp", &Renderer::TEX_RGB);
     test_mod = new Renderer::Model("./models/test.md3");
+
+    listen(Core::MSG_QUIT);
 }
 
 
@@ -139,6 +141,18 @@ void Client::handle_events() {
 void Client::handle_mouse(SDL_Event* event) {
     player->turn(event->motion.xrel * input->m_xfactor);
     player->tilt(event->motion.yrel * input->m_yfactor);
+}
+
+
+void Client::callback(Core::Message* msg) {
+    switch (msg->type) {
+        case Core::MSG_QUIT:
+            running = false;
+            break;
+
+        default:
+            break;
+    }
 }
 
 }} // SolidDescent::Game

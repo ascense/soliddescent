@@ -42,6 +42,9 @@ Screen::Screen(Game::Client* client, int width, int height, bool fullscreen) thr
     }
 
     set_shading();
+
+    listen(Core::MSG_R_SET_FOV);
+    listen(Core::MSG_R_REINIT);
 }
 
 
@@ -72,6 +75,22 @@ void Screen::draw() {
     draw_world();
 
     SDL_GL_SwapBuffers();
+}
+
+
+void Screen::callback(Core::Message* msg) {
+    switch (msg->type) {
+        case Core::MSG_R_SET_FOV:
+            set_fov(*((int*) (msg->data)));
+            break;
+
+        case Core::MSG_R_REINIT:
+            set_video_mode(width, height, 0, fullscreen);
+            break;
+
+        default:
+            break;
+    }
 }
 
 

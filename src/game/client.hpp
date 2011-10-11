@@ -22,16 +22,19 @@
 
 #include <SDL/SDL.h>
 
-#include "input.hpp"
-#include "entity.hpp"
+#include "../core/messaging/message.hpp"
+#include "../core/messaging/msginterface.hpp"
+
 #include "../renderer/model.hpp"
 #include "../renderer/texture.hpp"
 #include "../renderer/texturedata.hpp"
+#include "input.hpp"
+#include "entity.hpp"
 
 
 namespace SolidDescent { namespace Game {
 
-class Client {
+class Client : public Core::MsgInterface {
 public:
     Client();
     ~Client();
@@ -43,6 +46,8 @@ public:
 
     void get_camera_angle(float (*angles)[3]);
     void get_camera_position(float (*xyz)[3]);
+
+    void callback(Core::Message* msg);
 
     Renderer::Texture** get_skybox();
 

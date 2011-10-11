@@ -17,45 +17,37 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CORE_ENGINE_HPP
-#define CORE_ENGINE_HPP
+#ifndef CORE_MESSAGE_HPP
+#define CORE_MESSAGE_HPP
 
-#include "exceptions.hpp"
-#include "messaging/message.hpp"
-#include "messaging/msginterface.hpp"
-#include "messaging/msgserver.hpp"
-
-#include "../renderer/screen.hpp"
-#include "../game/server.hpp"
-#include "../game/client.hpp"
+#include <cstddef>
 
 
 namespace SolidDescent { namespace Core {
 
-class Engine : public MsgInterface {
-public:
-    Engine();
-    ~Engine();
+enum MessageType {
+    // Core:
+    MSG_SET_MAXFPS,
+    MSG_QUIT,
+    // Renderer:
+    MSG_R_SET_FOV,
+    MSG_R_REINIT,
+    // Keep this last:
+    MSG_MAP_LENGTH
+};
 
-    void run();
 
-    void callback(Message* msg);
+struct Message {
+    MessageType type;
+    size_t data_len;
+    void *data;
 
-    // only sleep if more than 5 ms until next frame
-    static const int MIN_SLEEP_INTERVAL = 5;
+    Message *next;
 
-private:
-    void set_maxfps(int fps);
-    double handle_timing();
-
-    Renderer::Screen *screen;
-    Game::Server *server;
-    Game::Client *client;
-
-    long frame_time;
-    int frame_millis;
+    Message(MessageType type) : type(type), data_len(0), data(NULL), next(NULL) {}
+    ~Message();
 };
 
 }} // SolidDescent::Core
 
-#endif // CORE_ENGINE_HPP
+#endif // CORE_MESSAGE_HPP

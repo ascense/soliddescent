@@ -36,9 +36,10 @@ Engine::Engine() {
 
     set_maxfps(120);
     client->set_mouse_sensitivity(5);
-    // screen->set_fov(90);
 
     frame_time = SDL_GetTicks();
+
+    listen(MSG_SET_MAXFPS);
 }
 
 
@@ -73,6 +74,26 @@ void Engine::run() {
 }
 
 
+void Engine::callback(Message* msg) {
+    switch (msg->type) {
+        case MSG_SET_MAXFPS:
+            set_maxfps(*((int*) (msg->data)));
+            break;
+
+        default:
+            break;
+    }
+}
+
+
+void Engine::set_maxfps(int fps) {
+    if (fps <= 0 || fps > 1000)
+        frame_millis = -1;
+    else
+        frame_millis = 1000 / fps;
+}
+
+
 double Engine::handle_timing() {
     if (frame_millis > 0) {
         long delta_offset = frame_time + frame_millis - SDL_GetTicks();
@@ -84,14 +105,6 @@ double Engine::handle_timing() {
     frame_time = SDL_GetTicks();
 
     return time_delta;
-}
-
-
-void Engine::set_maxfps(int fps) {
-    if (fps <= 0 || fps > 1000)
-        frame_millis = -1;
-    else
-        frame_millis = 1000 / fps;
 }
 
 }} // SolidDescent::Core
