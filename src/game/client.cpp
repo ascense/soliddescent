@@ -43,7 +43,8 @@ Client::Client() {
 
 
 Client::~Client() {
-    delete test;
+    delete test_tex;
+    delete test_mod;
 
     for (int i = 0; i < 6; ++i) {
         if (skybox[i] != NULL)

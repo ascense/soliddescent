@@ -24,6 +24,7 @@
 
 #include "input.hpp"
 #include "entity.hpp"
+#include "../renderer/model.hpp"
 #include "../renderer/texture.hpp"
 #include "../renderer/texturedata.hpp"
 
