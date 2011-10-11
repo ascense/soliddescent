@@ -17,7 +17,7 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../soliddescent.hpp"
+#include "engine.hpp"
 
 
 namespace SolidDescent { namespace Core {
@@ -43,6 +43,8 @@ Engine::Engine() {
 
 
 Engine::~Engine() {
+    MsgServer::destroy();
+
     delete client;
     delete server;
 
@@ -64,6 +66,9 @@ void Engine::run() {
         // Client
         client->update(delta);
         screen->draw();
+
+        // Messaging
+        MsgServer::get_inst()->process();
     }
 }
 

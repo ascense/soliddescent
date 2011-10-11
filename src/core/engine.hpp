@@ -21,6 +21,8 @@
 #define CORE_ENGINE_HPP
 
 #include "exceptions.hpp"
+#include "messaging/msgserver.hpp"
+
 #include "../renderer/screen.hpp"
 #include "../game/server.hpp"
 #include "../game/client.hpp"
