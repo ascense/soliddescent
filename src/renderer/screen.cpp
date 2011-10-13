@@ -94,12 +94,6 @@ void Screen::callback(Core::Message* msg) {
 }
 
 
-// Change the field of view
-void Screen::set_fov(int fov) {
-    set_projection(fov, znear, zfar);
-}
-
-
 void Screen::draw_sky() {
     draw_skybox(game->get_skybox());
 }
@@ -158,8 +152,7 @@ bool Screen::set_video_mode(int width, int height, int bpp, bool fullscreen) {
 
     set_projection(90, znear, zfar);
 
-    SDL_ShowCursor(0);
-    SDL_WM_GrabInput(SDL_GRAB_ON);
+    set_mouse_grab(true);
 
     return true;
 }
@@ -199,6 +192,7 @@ void Screen::set_projection(int fov, double near, double far) {
 // Set the default shading options
 void Screen::set_shading() {
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
     glShadeModel(GL_SMOOTH);
     glClearColor(0, 0, 0, 0);
 
@@ -209,6 +203,22 @@ void Screen::set_shading() {
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+}
+
+
+void Screen::set_fov(int fov) {
+    set_projection(fov, znear, zfar);
+}
+
+
+void Screen::set_mouse_grab(bool grabbed) {
+    if (grabbed) {
+        SDL_ShowCursor(0);
+        SDL_WM_GrabInput(SDL_GRAB_ON);
+    } else {
+        SDL_ShowCursor(1);
+        SDL_WM_GrabInput(SDL_GRAB_OFF);
+    }
 }
 
 

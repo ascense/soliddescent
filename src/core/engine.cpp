@@ -34,12 +34,14 @@ Engine::Engine() {
         throw;
     }
 
-    set_maxfps(120);
     client->set_mouse_sensitivity(5);
-
     frame_time = SDL_GetTicks();
 
-    listen(MSG_SET_MAXFPS);
+    post(MSG_R_SET_FOV, 85);
+    post(MSG_C_SET_MAXFPS, 125);
+    post(MSG_G_SET_SENS, 5.0f);
+
+    listen(MSG_C_SET_MAXFPS);
 }
 
 
@@ -76,7 +78,7 @@ void Engine::run() {
 
 void Engine::callback(Message* msg) {
     switch (msg->type) {
-        case MSG_SET_MAXFPS:
+        case MSG_C_SET_MAXFPS:
             set_maxfps(*((int*) (msg->data)));
             break;
 

@@ -26,12 +26,19 @@
 namespace SolidDescent { namespace Core {
 
 enum MessageType {
-    // Core:
-    MSG_SET_MAXFPS,
+    // Global:
     MSG_QUIT,
+
+    // Core:
+    MSG_C_SET_MAXFPS,
+
     // Renderer:
     MSG_R_SET_FOV,
     MSG_R_REINIT,
+
+    // Game:
+    MSG_G_SET_SENS,
+
     // Keep this last:
     MSG_MAP_LENGTH
 };

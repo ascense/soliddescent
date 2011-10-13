@@ -42,17 +42,18 @@ public:
 
     void callback(Core::Message* msg);
 
-    void set_fov(int fov);
-
 private:
+    void draw_sky();
+    void draw_world();
+    void draw_2d();
+
     void set_gl_buffer(int col_bits, int depth_bits);
     bool set_video_mode(int width, int height, int bpp, bool fullscreen);
     void set_projection(int fov, double near, double far);
     void set_shading();
 
-    void draw_sky();
-    void draw_world();
-    void draw_2d();
+    void set_mouse_grab(bool grabbed);
+    void set_fov(int fov);
 
     void check_gl_err();
 

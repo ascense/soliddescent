@@ -41,6 +41,7 @@ Client::Client() {
     test_mod = new Renderer::Model("./models/test.md3");
 
     listen(Core::MSG_QUIT);
+    listen(Core::MSG_G_SET_SENS);
 }
 
 
@@ -94,6 +95,22 @@ Renderer::Texture** Client::get_skybox() {
 }
 
 
+void Client::callback(Core::Message* msg) {
+    switch (msg->type) {
+        case Core::MSG_QUIT:
+            running = false;
+            break;
+
+        case Core::MSG_G_SET_SENS:
+            set_mouse_sensitivity(*((float*) (msg->data)));
+            break;
+
+        default:
+            break;
+    }
+}
+
+
 void Client::handle_input(double delta) {
     if (input->key_down(K_FORWARD))
         player->translate(delta * player->speed);
@@ -141,18 +158,6 @@ void Client::handle_events() {
 void Client::handle_mouse(SDL_Event* event) {
     player->turn(event->motion.xrel * input->m_xfactor);
     player->tilt(event->motion.yrel * input->m_yfactor);
-}
-
-
-void Client::callback(Core::Message* msg) {
-    switch (msg->type) {
-        case Core::MSG_QUIT:
-            running = false;
-            break;
-
-        default:
-            break;
-    }
 }
 
 }} // SolidDescent::Game

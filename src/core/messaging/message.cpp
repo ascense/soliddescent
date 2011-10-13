@@ -23,10 +23,7 @@
 namespace SolidDescent { namespace Core {
 
 Message::~Message() {
-    if (next)
-        delete next;
-
-    // TODO: delete msg data
+    delete data;
 }
 
 }} // SolidDescent::Core
