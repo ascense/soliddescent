@@ -32,9 +32,9 @@ struct TextureFmt {
     GLint filter;
 };
 
-const TextureFmt TEX_RGB = {GL_RGB, GL_REPEAT, GL_LINEAR};
-const TextureFmt TEX_RGBA = {GL_RGBA, GL_REPEAT, GL_LINEAR};
-const TextureFmt TEX_SKY = {GL_RGB, GL_CLAMP, GL_NEAREST};
+const TextureFmt TEX_RGB = {GL_RGB, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR};
+const TextureFmt TEX_RGBA = {GL_RGBA, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR};
+const TextureFmt TEX_SKY = {GL_RGB, GL_CLAMP, GL_LINEAR};
 
 
 struct TextureData {

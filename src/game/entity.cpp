@@ -22,49 +22,45 @@
 
 namespace SolidDescent { namespace Game {
 
-Entity::Entity(float x, float y, float z) {
-    heading = pitch = roll = 0;
+Entity::Entity() : speed(8), model(NULL) {}
 
-    this->x = x;
-    this->y = y;
-    this->z = z;
 
-    this->speed = 8;
-}
+Entity::Entity(float x, float y, float z)
+        : speed(8), pos(x, y, z), model(NULL) {}
 
 
 Entity::~Entity() {}
 
 
 void Entity::translate(float distance) {
-    float rad = Lib::to_radians(heading);
-    x += (float) std::sin(rad) * distance;
-    z -= (float) std::cos(rad) * distance;
+    float rad = Lib::to_radians(rot.y);
+    pos.x += (float) std::sin(rad) * distance;
+    pos.z -= (float) std::cos(rad) * distance;
 }
 
 
 void Entity::strafe(float distance) {
-    float rad = Lib::to_radians(heading - 90);
-    x += (float) std::sin(rad) * distance;
-    z -= (float) std::cos(rad) * distance;
-}
-
-
-void Entity::turn(float degrees) {
-    heading += degrees;
-    if (heading < 0)
-        heading += 360;
-    else if (heading > 360)
-        heading -= 360;
+    float rad = Lib::to_radians(rot.y - 90);
+    pos.x += (float) std::sin(rad) * distance;
+    pos.z -= (float) std::cos(rad) * distance;
 }
 
 
 void Entity::tilt(float degrees) {
-    pitch += degrees;
-    if (pitch > 90)
-        pitch = 90;
-    else if (pitch < -90)
-        pitch = -90;
+    rot.x += degrees;
+    if (rot.x > 90)
+        rot.x = 90;
+    else if (rot.x < -90)
+        rot.x = -90;
+}
+
+
+void Entity::turn(float degrees) {
+    rot.y += degrees;
+    if (rot.y < 0)
+        rot.y += 360;
+    else if (rot.y > 360)
+        rot.y -= 360;
 }
 
 }} // SolidDescent::Game

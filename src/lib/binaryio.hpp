@@ -20,6 +20,7 @@
 #ifndef LIB_BINARYIO_HPP
 #define LIB_BINARYIO_HPP
 
+#include <iostream>
 #include <fstream>
 
 #include "../core/exceptions.hpp"
@@ -32,6 +33,8 @@ int read_int(std::ifstream* stream);
 float read_float(std::ifstream* stream);
 std::string read_cstr(std::ifstream* stream, int maxlen);
 Core::Vec3f read_vec3f(std::ifstream* stream);
+
+uint32_t swap_bytes(uint32_t);
 
 void read_val(std::ifstream* stream, void* val, std::size_t len);
 void check_stream(std::ifstream* stream);

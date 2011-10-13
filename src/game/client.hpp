@@ -22,11 +22,13 @@
 
 #include <SDL/SDL.h>
 
-#include "input.hpp"
-#include "entity.hpp"
+#include "../core/vector.hpp"
 #include "../renderer/model.hpp"
 #include "../renderer/texture.hpp"
 #include "../renderer/texturedata.hpp"
+
+#include "input.hpp"
+#include "entity.hpp"
 
 
 namespace SolidDescent { namespace Game {
@@ -41,9 +43,10 @@ public:
 
     void set_mouse_sensitivity(float factor);
 
-    void get_camera_angle(float (*angles)[3]);
-    void get_camera_position(float (*xyz)[3]);
+    Core::Vec3f* get_camera_angle();
+    Core::Vec3f* get_camera_position();
 
+    Entity* get_player();
     Renderer::Texture** get_skybox();
 
     Renderer::Texture *test_tex;

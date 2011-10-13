@@ -73,17 +73,18 @@ void Client::set_mouse_sensitivity(float factor) {
 }
 
 
-void Client::get_camera_angle(float (*angles)[3]) {
-    (*angles)[0] = player->pitch; // X
-    (*angles)[1] = player->heading; // Y
-    (*angles)[2] = player->roll; // Z
+Core::Vec3f* Client::get_camera_angle() {
+    return &player->rot;
 }
 
 
-void Client::get_camera_position(float (*pos)[3]) {
-    (*pos)[0] = player->x;
-    (*pos)[1] = player->y;
-    (*pos)[2] = player->z;
+Core::Vec3f* Client::get_camera_position() {
+    return &player->pos;
+}
+
+
+Entity* Client::get_player() {
+    return player;
 }
 
 
@@ -103,10 +104,9 @@ void Client::handle_input(double delta) {
         player->strafe(delta * -player->speed);
 
     if (input->key_down(K_JUMP))
-        player->y += delta * player->speed;
+        player->pos.y += delta * player->speed;
     if (input->key_down(K_CROUCH))
-        player->y += delta * -player->speed;
-
+        player->pos.y += delta * -player->speed;
     if (input->key_down(K_QUIT))
         running = false;
 }

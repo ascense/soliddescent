@@ -51,23 +51,22 @@ Screen::~Screen() {
 }
 
 
-// Draw the scene
 void Screen::draw() {
-    float cam[3];
+    Core::Vec3f* cam;
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     glLoadIdentity();
 
-    game->get_camera_angle(&cam);
-    glRotatef(cam[0], 1.0f, 0.0f, 0.0f);
-    glRotatef(cam[1], 0.0f, 1.0f, 0.0f);
-    glRotatef(cam[2], 0.0f, 0.0f, 1.0f);
+    cam = game->get_camera_angle();
+    glRotatef(cam->x, 1.0f, 0.0f, 0.0f);
+    glRotatef(cam->y, 0.0f, 1.0f, 0.0f);
+    glRotatef(cam->z, 0.0f, 0.0f, 1.0f);
 
     draw_sky();
 
-    game->get_camera_position(&cam);
-    glTranslatef(-cam[0], -cam[1], -cam[2]);
+    cam = game->get_camera_position();
+    glTranslatef(-cam->x, -cam->y, -cam->z);
 
     draw_world();
 
@@ -88,9 +87,9 @@ void Screen::draw_sky() {
 
 void Screen::draw_world() {
     game->test_tex->use();
-    draw_cube(-8, -8, -25, 16, 16, 16);
+    draw_cube(-8, -8, -64, 32, 32, 32);
 
-    draw_model(game->test_mod);
+    draw_model(game->test_mod, 0, 0, 0, 0, 0, 0);
 }
 
 
@@ -180,6 +179,8 @@ void Screen::set_projection(int fov, double near, double far) {
 // Set the default shading options
 void Screen::set_shading() {
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    glHint(GL_GENERATE_MIPMAP_HINT, GL_NICEST);
+
     glShadeModel(GL_SMOOTH);
     glClearColor(0, 0, 0, 0);
 

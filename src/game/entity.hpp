@@ -23,12 +23,15 @@
 #include <cmath>
 
 #include "../lib/math.hpp"
+#include "../core/vector.hpp"
+#include "../renderer/model.hpp"
 
 
 namespace SolidDescent { namespace Game {
 
 class Entity {
 public:
+    Entity();
     Entity(float x, float y, float z);
     ~Entity();
 
@@ -39,8 +42,11 @@ public:
     void strafe(float distance);
 
     float speed;
-    float x, y, z;
-    float heading, pitch, roll;
+    Core::Vec3f pos;
+    Core::Vec3f rot;
+
+    // Entity doesn't take ownership of model
+    Renderer::Model* model;
 };
 
 }} // SolidDescent::Game

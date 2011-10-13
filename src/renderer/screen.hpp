@@ -24,8 +24,6 @@
 #include <GL/glew.h>
 #include <SDL/SDL.h>
 
-#include <cstdio>
-
 #include "../core/exceptions.hpp"
 #include "../game/client.hpp"
 #include "draw.hpp"

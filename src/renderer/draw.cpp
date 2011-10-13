@@ -22,13 +22,41 @@
 
 namespace SolidDescent { namespace Renderer {
 
-void draw_model(Model* model) {
+void draw_entity(Game::Entity* ent) {
+    if (ent == NULL || ent->model == NULL)
+        return;
+
+    draw_model(ent->model, &ent->pos, &ent->rot);
+}
+
+
+void draw_model(Model* model, Core::Vec3f* pos) {
+    draw_model(model, pos->x, pos->y, pos->z, 0, 0, 0);
+}
+
+
+void draw_model(Model* model, Core::Vec3f* pos, Core::Vec3f* rot) {
+    draw_model(model, pos->x, pos->y, pos->z, rot->x, rot->y, rot->z);
+}
+
+
+void draw_model(Model* model, float x, float y, float z, float pitch, float yaw, float roll) {
     ModelData* mod = model->get_data();
     if (mod == NULL)
         return;
 
+    glPushMatrix();
+
+    glTranslatef(x, y, z);
+
+    glRotatef(yaw, 0, 1, 0);
+    glRotatef(pitch, 1, 0, 0);
+    glRotatef(roll, 0, 0, 1);
+
     for (int i = 0; i < mod->get_mesh_count(); ++i)
         draw_mesh(mod->get_meshes()[i]);
+
+    glPopMatrix();
 }
 
 
@@ -70,69 +98,69 @@ void draw_mesh(Mesh* mesh) {
 
 
 void draw_cube(int x, int y, int z, int width, int height, int depth) {
-    int TEX_SCALE = 16;
+    float TEX_SCALE = 32.0f;
 
     glBegin(GL_QUADS);
 
     // Front
-    glTexCoord2f(0, height / TEX_SCALE);
-    glVertex3i(x + width, y + height, z + depth);
-    glTexCoord2f(width / TEX_SCALE, height / TEX_SCALE);
-    glVertex3i(x, y + height, z + depth);
-    glTexCoord2f(width / TEX_SCALE, 0);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex3i(x, y, z + depth);
-    glTexCoord2f(0, 0);
+    glTexCoord2f(width / TEX_SCALE, 0.0f);
     glVertex3i(x + width, y, z + depth);
-
-    // Right
-    glTexCoord2f(0, height / TEX_SCALE);
-    glVertex3i(x + width, y + height, z);
     glTexCoord2f(width / TEX_SCALE, height / TEX_SCALE);
     glVertex3i(x + width, y + height, z + depth);
-    glTexCoord2f(width / TEX_SCALE, 0);
-    glVertex3i(x + width, y, z + depth);
-    glTexCoord2f(0, 0);
-    glVertex3i(x + width, y, z);
+    glTexCoord2f(0.0f, height / TEX_SCALE);
+    glVertex3i(x, y + height, z + depth);
 
     // Back
-    glTexCoord2f(0, height / TEX_SCALE);
-    glVertex3i(x, y + height, z);
+    glTexCoord2f(width / TEX_SCALE, 0.0f);
+    glVertex3i(x, y, z);
     glTexCoord2f(width / TEX_SCALE, height / TEX_SCALE);
+    glVertex3i(x, y + height, z);
+    glTexCoord2f(0.0f, height / TEX_SCALE);
     glVertex3i(x + width, y + height, z);
-    glTexCoord2f(width / TEX_SCALE, 0);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex3i(x + width, y, z);
-    glTexCoord2f(0, 0);
-    glVertex3i(x, y, z);
-
-    // Left
-    glTexCoord2f(0, height / TEX_SCALE);
-    glVertex3i(x, y + height, z + depth);
-    glTexCoord2f(width / TEX_SCALE, height / TEX_SCALE);
-    glVertex3i(x, y + height, z);
-    glTexCoord2f(width / TEX_SCALE, 0);
-    glVertex3i(x, y, z);
-    glTexCoord2f(0, 0);
-    glVertex3i(x, y, z + depth);
 
     // Top
-    glTexCoord2f(0, height / TEX_SCALE);
-    glVertex3i(x, y + height, z + depth);
-    glTexCoord2f(width / TEX_SCALE, height / TEX_SCALE);
+    glTexCoord2f(width / TEX_SCALE, depth / TEX_SCALE);
     glVertex3i(x + width, y + height, z + depth);
-    glTexCoord2f(width / TEX_SCALE, 0);
+    glTexCoord2f(width / TEX_SCALE, 0.0f);
     glVertex3i(x + width, y + height, z);
-    glTexCoord2f(0, 0);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex3i(x, y + height, z);
+    glTexCoord2f(0.0f, depth / TEX_SCALE);
+    glVertex3i(x, y + height, z + depth);
 
     // Bottom
-    glTexCoord2f(0, height / TEX_SCALE);
-    glVertex3i(x, y, z + depth);
-    glTexCoord2f(width / TEX_SCALE, height / TEX_SCALE);
+    glTexCoord2f(width / TEX_SCALE, depth / TEX_SCALE);
     glVertex3i(x, y, z);
-    glTexCoord2f(width / TEX_SCALE, 0);
+    glTexCoord2f(0.0f, depth / TEX_SCALE);
     glVertex3i(x + width, y, z);
-    glTexCoord2f(0, 0);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex3i(x + width, y, z + depth);
+    glTexCoord2f(width / TEX_SCALE, 0.0f);
+    glVertex3i(x, y, z + depth);
+
+    // Right
+    glTexCoord2f(depth / TEX_SCALE, 0.0f);
+    glVertex3i(x + width, y, z);
+    glTexCoord2f(depth / TEX_SCALE, height / TEX_SCALE);
+    glVertex3i(x + width, y + height, z);
+    glTexCoord2f(0.0f, height / TEX_SCALE);
+    glVertex3i(x + width, y + height, z + depth);
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3i(x + width, y, z + depth);
+
+    // Left
+    glTexCoord2f(0.0f, 0.0f);
+    glVertex3i(x, y, z);
+    glTexCoord2f(depth / TEX_SCALE, 0.0f);
+    glVertex3i(x, y, z + depth);
+    glTexCoord2f(depth / TEX_SCALE, height / TEX_SCALE);
+    glVertex3i(x, y + height, z + depth);
+    glTexCoord2f(0.0f, height / TEX_SCALE);
+    glVertex3i(x, y + height, z);
 
     glEnd();
 }

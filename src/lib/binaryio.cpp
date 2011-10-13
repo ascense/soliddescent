@@ -22,12 +22,6 @@
 
 namespace SolidDescent { namespace Lib {
 
-
-void read_val(std::ifstream* stream, void* val, std::size_t len) {
-    stream->read((char*) val, len);
-}
-
-
 int read_int(std::ifstream* stream) {
     check_stream(stream);
 
@@ -77,6 +71,16 @@ Core::Vec3f read_vec3f(std::ifstream* stream) {
     vec.z = val;
 
     return vec;
+}
+
+
+uint32_t swap_bytes(uint32_t val) {
+    return ((val & 0xff) << 24 | (val & 0xff00) << 8 | (val & 0xff0000) >> 8 | (val & 0xff000000) >> 24);
+}
+
+
+void read_val(std::ifstream* stream, void* val, std::size_t len) {
+    stream->read((char*) val, len);
 }
 
 
