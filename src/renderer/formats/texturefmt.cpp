@@ -72,8 +72,8 @@ GLuint gen_texture(const TextureFmt* fmt) {
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, fmt->wrap);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, fmt->wrap);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, fmt->filter);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, fmt->min_filter);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, fmt->mag_filter);
 
     if (GLEW_VERSION_1_3)
         glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);

@@ -29,12 +29,13 @@ namespace SolidDescent { namespace Renderer {
 struct TextureFmt {
     GLenum fmt;
     GLint wrap;
-    GLint filter;
+    GLint min_filter;
+    GLint mag_filter;
 };
 
-const TextureFmt TEX_RGB = {GL_RGB, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR};
-const TextureFmt TEX_RGBA = {GL_RGBA, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR};
-const TextureFmt TEX_SKY = {GL_RGB, GL_CLAMP, GL_LINEAR};
+const TextureFmt TEX_RGB = {GL_RGB, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR};
+const TextureFmt TEX_RGBA = {GL_RGBA, GL_REPEAT, GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR};
+const TextureFmt TEX_SKY = {GL_RGB, GL_CLAMP, GL_NEAREST, GL_NEAREST};
 
 
 struct TextureData {
