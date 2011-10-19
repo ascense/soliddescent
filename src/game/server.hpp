@@ -20,16 +20,21 @@
 #ifndef GAME_SERVER_HPP
 #define GAME_SERVER_HPP
 
+#include "../core/messaging/message.hpp"
+#include "../core/messaging/msginterface.hpp"
+
 
 namespace SolidDescent { namespace Game {
 
-class Server {
+class Server : public Core::MsgInterface {
 public:
     Server();
     ~Server();
 
     void update(double time_delta);
     bool is_running();
+
+    void callback(Core::Message* msg);
 
 private:
     bool running;

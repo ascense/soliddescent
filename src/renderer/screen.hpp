@@ -24,6 +24,8 @@
 #include <GL/glew.h>
 #include <SDL/SDL.h>
 
+#include "../core/messaging/message.hpp"
+#include "../core/messaging/msginterface.hpp"
 #include "../core/exceptions.hpp"
 #include "../game/client.hpp"
 #include "draw.hpp"
@@ -31,24 +33,27 @@
 
 namespace SolidDescent { namespace Renderer {
 
-class Screen {
+class Screen : public Core::MsgInterface {
 public:
     Screen(Game::Client* client, int width, int height, bool fullscreen) throw (Core::SolidDescentException);
     ~Screen();
 
     void draw();
 
-    void set_fov(int fov);
+    void callback(Core::Message* msg);
 
 private:
+    void draw_sky();
+    void draw_world();
+    void draw_2d();
+
     void set_gl_buffer(int col_bits, int depth_bits);
     bool set_video_mode(int width, int height, int bpp, bool fullscreen);
     void set_projection(int fov, double near, double far);
     void set_shading();
 
-    void draw_sky();
-    void draw_world();
-    void draw_2d();
+    void set_mouse_grab(bool grabbed);
+    void set_fov(int fov);
 
     void check_gl_err();
 

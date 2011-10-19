@@ -22,9 +22,7 @@
 
 namespace SolidDescent { namespace Game {
 
-Client::Client() {
-    running = true;
-
+Client::Client() : running(true) {
     input = new Input();
     player = new Entity(0, 0, 0);
     player->speed = 32;
@@ -39,6 +37,9 @@ Client::Client() {
 
     test_tex = new Renderer::Texture("./gfx/test.bmp", &Renderer::TEX_RGB);
     test_mod = new Renderer::Model("./models/test.md3");
+
+    listen(Core::MSG_QUIT);
+    listen(Core::MSG_G_SET_SENS);
 }
 
 
@@ -65,6 +66,22 @@ void Client::update(double delta) {
 
 bool Client::is_running() {
     return running;
+}
+
+
+void Client::callback(Core::Message* msg) {
+    switch (msg->type) {
+        case Core::MSG_QUIT:
+            running = false;
+            break;
+
+        case Core::MSG_G_SET_SENS:
+            set_mouse_sensitivity(*((float*) (msg->data)));
+            break;
+
+        default:
+            break;
+    }
 }
 
 
@@ -108,7 +125,7 @@ void Client::handle_input(double delta) {
     if (input->key_down(K_CROUCH))
         player->pos.y += delta * -player->speed;
     if (input->key_down(K_QUIT))
-        running = false;
+        post(Core::MSG_QUIT);
 }
 
 

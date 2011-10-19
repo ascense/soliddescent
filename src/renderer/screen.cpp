@@ -42,6 +42,9 @@ Screen::Screen(Game::Client* client, int width, int height, bool fullscreen) thr
     }
 
     set_shading();
+
+    listen(Core::MSG_R_SET_FOV);
+    listen(Core::MSG_R_REINIT);
 }
 
 
@@ -74,9 +77,19 @@ void Screen::draw() {
 }
 
 
-// Change the field of view
-void Screen::set_fov(int fov) {
-    set_projection(fov, znear, zfar);
+void Screen::callback(Core::Message* msg) {
+    switch (msg->type) {
+        case Core::MSG_R_SET_FOV:
+            set_fov(*((int*) (msg->data)));
+            break;
+
+        case Core::MSG_R_REINIT:
+            set_video_mode(width, height, 0, fullscreen);
+            break;
+
+        default:
+            break;
+    }
 }
 
 
@@ -138,8 +151,7 @@ bool Screen::set_video_mode(int width, int height, int bpp, bool fullscreen) {
 
     set_projection(90, znear, zfar);
 
-    SDL_ShowCursor(0);
-    SDL_WM_GrabInput(SDL_GRAB_ON);
+    set_mouse_grab(true);
 
     return true;
 }
@@ -191,6 +203,22 @@ void Screen::set_shading() {
 
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+}
+
+
+void Screen::set_fov(int fov) {
+    set_projection(fov, znear, zfar);
+}
+
+
+void Screen::set_mouse_grab(bool grabbed) {
+    if (grabbed) {
+        SDL_ShowCursor(0);
+        SDL_WM_GrabInput(SDL_GRAB_ON);
+    } else {
+        SDL_ShowCursor(1);
+        SDL_WM_GrabInput(SDL_GRAB_OFF);
+    }
 }
 
 

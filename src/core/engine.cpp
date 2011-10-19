@@ -17,7 +17,7 @@
 * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "../soliddescent.hpp"
+#include "engine.hpp"
 
 
 namespace SolidDescent { namespace Core {
@@ -34,15 +34,18 @@ Engine::Engine() {
         throw;
     }
 
-    set_maxfps(120);
-    client->set_mouse_sensitivity(5);
-    // screen->set_fov(90);
-
     frame_time = SDL_GetTicks();
+    listen(MSG_C_SET_MAXFPS);
+
+    post(MSG_R_SET_FOV, 85);
+    post(MSG_C_SET_MAXFPS, 125);
+    post(MSG_G_SET_SENS, 5.0f);
 }
 
 
 Engine::~Engine() {
+    MsgServer::destroy();
+
     delete client;
     delete server;
 
@@ -52,19 +55,43 @@ Engine::~Engine() {
 
 void Engine::run() {
     double delta;
+    MsgServer* messaging = MsgServer::get_inst();
 
-    while (client->is_running()) {
-        // Timing
+    while (client->is_running() || server->is_running()) {
+        // Timing & Messaging
         delta = handle_timing();
+        messaging->process();
 
         // Server
         if (server->is_running())
             server->update(delta);
 
         // Client
-        client->update(delta);
+        if (client->is_running())
+            client->update(delta);
+
         screen->draw();
     }
+}
+
+
+void Engine::callback(Message* msg) {
+    switch (msg->type) {
+        case MSG_C_SET_MAXFPS:
+            set_maxfps(*((int*) (msg->data)));
+            break;
+
+        default:
+            break;
+    }
+}
+
+
+void Engine::set_maxfps(int fps) {
+    if (fps <= 0 || fps > 1000)
+        frame_millis = -1;
+    else
+        frame_millis = 1000 / fps;
 }
 
 
@@ -79,14 +106,6 @@ double Engine::handle_timing() {
     frame_time = SDL_GetTicks();
 
     return time_delta;
-}
-
-
-void Engine::set_maxfps(int fps) {
-    if (fps <= 0 || fps > 1000)
-        frame_millis = -1;
-    else
-        frame_millis = 1000 / fps;
 }
 
 }} // SolidDescent::Core

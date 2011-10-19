@@ -22,8 +22,8 @@
 
 namespace SolidDescent { namespace Game {
 
-Server::Server() {
-    running = true;
+Server::Server() : running(true) {
+    listen(Core::MSG_QUIT);
 }
 
 
@@ -35,6 +35,18 @@ void Server::update(double time_delta) {}
 
 bool Server::is_running() {
     return running;
+}
+
+
+void Server::callback(Core::Message* msg) {
+    switch (msg->type) {
+        case Core::MSG_QUIT:
+            running = false;
+            break;
+
+        default:
+            break;
+    }
 }
 
 

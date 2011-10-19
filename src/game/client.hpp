@@ -23,17 +23,19 @@
 #include <SDL/SDL.h>
 
 #include "../core/vector.hpp"
+#include "../core/messaging/message.hpp"
+#include "../core/messaging/msginterface.hpp"
+
 #include "../renderer/model.hpp"
 #include "../renderer/texture.hpp"
 #include "../renderer/texturedata.hpp"
-
 #include "input.hpp"
 #include "entity.hpp"
 
 
 namespace SolidDescent { namespace Game {
 
-class Client {
+class Client : public Core::MsgInterface {
 public:
     Client();
     ~Client();
@@ -41,12 +43,14 @@ public:
     void update(double delta);
     bool is_running();
 
+    void callback(Core::Message* msg);
+
     void set_mouse_sensitivity(float factor);
 
     Core::Vec3f* get_camera_angle();
     Core::Vec3f* get_camera_position();
-
     Entity* get_player();
+
     Renderer::Texture** get_skybox();
 
     Renderer::Texture *test_tex;
