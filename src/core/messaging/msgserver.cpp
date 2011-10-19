@@ -86,6 +86,8 @@ void MsgServer::process() {
 
         delete tail;
     }
+
+    msg_head = NULL;
 }
 
 

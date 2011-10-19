@@ -42,12 +42,12 @@ public:
     void update(double delta);
     bool is_running();
 
+    void callback(Core::Message* msg);
+
     void set_mouse_sensitivity(float factor);
 
     void get_camera_angle(float (*angles)[3]);
     void get_camera_position(float (*xyz)[3]);
-
-    void callback(Core::Message* msg);
 
     Renderer::Texture** get_skybox();
 

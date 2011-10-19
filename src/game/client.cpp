@@ -22,9 +22,7 @@
 
 namespace SolidDescent { namespace Game {
 
-Client::Client() {
-    running = true;
-
+Client::Client() : running(true) {
     input = new Input();
     player = new Entity(0, 0, 0);
     player->speed = 32;
@@ -71,6 +69,22 @@ bool Client::is_running() {
 }
 
 
+void Client::callback(Core::Message* msg) {
+    switch (msg->type) {
+        case Core::MSG_QUIT:
+            running = false;
+            break;
+
+        case Core::MSG_G_SET_SENS:
+            set_mouse_sensitivity(*((float*) (msg->data)));
+            break;
+
+        default:
+            break;
+    }
+}
+
+
 void Client::set_mouse_sensitivity(float factor) {
     input->set_mouse_sensitivity(factor);
 }
@@ -95,22 +109,6 @@ Renderer::Texture** Client::get_skybox() {
 }
 
 
-void Client::callback(Core::Message* msg) {
-    switch (msg->type) {
-        case Core::MSG_QUIT:
-            running = false;
-            break;
-
-        case Core::MSG_G_SET_SENS:
-            set_mouse_sensitivity(*((float*) (msg->data)));
-            break;
-
-        default:
-            break;
-    }
-}
-
-
 void Client::handle_input(double delta) {
     if (input->key_down(K_FORWARD))
         player->translate(delta * player->speed);
@@ -127,7 +125,7 @@ void Client::handle_input(double delta) {
         player->y += delta * -player->speed;
 
     if (input->key_down(K_QUIT))
-        running = false;
+        post(Core::MSG_QUIT);
 }
 
 

@@ -34,14 +34,12 @@ Engine::Engine() {
         throw;
     }
 
-    client->set_mouse_sensitivity(5);
     frame_time = SDL_GetTicks();
+    listen(MSG_C_SET_MAXFPS);
 
     post(MSG_R_SET_FOV, 85);
     post(MSG_C_SET_MAXFPS, 125);
     post(MSG_G_SET_SENS, 5.0f);
-
-    listen(MSG_C_SET_MAXFPS);
 }
 
 
@@ -57,21 +55,22 @@ Engine::~Engine() {
 
 void Engine::run() {
     double delta;
+    MsgServer* messaging = MsgServer::get_inst();
 
-    while (client->is_running()) {
-        // Timing
+    while (client->is_running() || server->is_running()) {
+        // Timing & Messaging
         delta = handle_timing();
+        messaging->process();
 
         // Server
         if (server->is_running())
             server->update(delta);
 
         // Client
-        client->update(delta);
-        screen->draw();
+        if (client->is_running())
+            client->update(delta);
 
-        // Messaging
-        MsgServer::get_inst()->process();
+        screen->draw();
     }
 }
 
