@@ -45,32 +45,23 @@ void MsgInterface::post(MessageType type) {
 
 void MsgInterface::post(MessageType type, void* data, size_t data_len) {
     Message *msg = new Message(type);
-    msg->data = data;
     msg->data_len = data_len;
+
+    msg->data = std::malloc(data_len);
+    if (msg->data != NULL)
+        std::memcpy(msg->data, data, data_len);
 
     MsgServer::get_inst()->post(msg);
 }
 
 
 void MsgInterface::post(MessageType type, float val) {
-    Message *msg = new Message(type);
-
-    msg->data = new float;
-    *((float*) (msg->data)) = val;
-    msg->data_len = sizeof(float);
-
-    MsgServer::get_inst()->post(msg);
+    post(type, &val, sizeof(float));
 }
 
 
 void MsgInterface::post(MessageType type, int val) {
-    Message *msg = new Message(type);
-
-    msg->data = new int;
-    *((int*) (msg->data)) = val;
-    msg->data_len = sizeof(int);
-
-    MsgServer::get_inst()->post(msg);
+    post(type, &val, sizeof(int));
 }
 
 }} // SolidDescent::Core

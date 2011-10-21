@@ -20,6 +20,9 @@
 #ifndef CORE_MSGLISTENER_HPP
 #define CORE_MSGLISTENER_HPP
 
+#include <cstdlib>
+#include <cstring>
+
 #include "message.hpp"
 #include "msgserver.hpp"
 

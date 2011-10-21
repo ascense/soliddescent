@@ -21,6 +21,7 @@
 #define CORE_MESSAGE_HPP
 
 #include <cstddef>
+#include <cstdlib>
 
 
 namespace SolidDescent { namespace Core {

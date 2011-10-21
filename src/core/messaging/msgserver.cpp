@@ -44,6 +44,9 @@ MsgServer::~MsgServer() {
         }
     }
     delete [] cb_array;
+
+    if (msg_tail)
+        delete msg_tail;
 }
 
 
@@ -84,6 +87,7 @@ void MsgServer::process() {
             cb = cb->next;
         }
 
+        tail->next = NULL;
         delete tail;
     }
 

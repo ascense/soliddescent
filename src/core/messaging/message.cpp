@@ -24,7 +24,10 @@ namespace SolidDescent { namespace Core {
 
 Message::~Message() {
     if (data)
-        delete data;
+        std::free(data);
+
+    if (next)
+        delete next;
 }
 
 }} // SolidDescent::Core
