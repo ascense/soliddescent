@@ -43,6 +43,20 @@ void MsgInterface::post(MessageType type) {
 }
 
 
+void MsgInterface::post(const char* cmd) {
+    MessageType msg = MSG_MAP_LENGTH;
+    for (int i = 0; i < MSG_MAP_LENGTH; ++i) {
+        if (std::strcmp(msgtype_str[i], cmd) == 0) {
+            msg = (MessageType) i;
+            break;
+        }
+    }
+
+    if (msg != MSG_MAP_LENGTH)
+        post(msg);
+}
+
+
 void MsgInterface::post(MessageType type, void* data, size_t data_len) {
     Message *msg = new Message(type);
     msg->data_len = data_len;

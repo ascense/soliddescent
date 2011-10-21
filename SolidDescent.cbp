@@ -97,6 +97,7 @@
 		<Unit filename="src\core\messaging\msginterface.hpp" />
 		<Unit filename="src\core\messaging\msgserver.cpp" />
 		<Unit filename="src\core\messaging\msgserver.hpp" />
+		<Unit filename="src\core\messaging\msgtypes.def" />
 		<Unit filename="src\core\resource.hpp" />
 		<Unit filename="src\core\vector.cpp" />
 		<Unit filename="src\core\vector.hpp" />

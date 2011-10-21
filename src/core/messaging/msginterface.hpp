@@ -35,6 +35,7 @@ public:
     void release(MessageType type);
 
     void post(Message* msg);
+    void post(const char* cmd);
     void post(MessageType type);
     void post(MessageType type, void* data, size_t data_len);
     void post(MessageType type, float val);

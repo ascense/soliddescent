@@ -1,0 +1,12 @@
+// Global:
+X(MSG_QUIT, "quit")
+
+// Core:
+X(MSG_C_SET_MAXFPS, "c_set_maxfps")
+
+// Renderer:
+X(MSG_R_SET_FOV, "r_set_fov")
+X(MSG_R_REINIT, "r_reinit")
+
+// Game:
+X(MSG_G_SET_SENS, "g_set_sens")

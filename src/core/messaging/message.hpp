@@ -27,23 +27,18 @@
 namespace SolidDescent { namespace Core {
 
 enum MessageType {
-    // Global:
-    MSG_QUIT,
-
-    // Core:
-    MSG_C_SET_MAXFPS,
-
-    // Renderer:
-    MSG_R_SET_FOV,
-    MSG_R_REINIT,
-
-    // Game:
-    MSG_G_SET_SENS,
-
-    // Keep this last:
+#   define X(enum, str) enum,
+#   include "msgtypes.def"
+#   undef X
     MSG_MAP_LENGTH
 };
 
+char const* const msgtype_str[] = {
+#   define X(enum, str) str,
+#   include "msgtypes.def"
+#   undef X
+    0
+};
 
 struct Message {
     MessageType type;
