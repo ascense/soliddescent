@@ -5,6 +5,9 @@ X(MSG_QUIT, "quit")
 X(MSG_C_SET_MAXFPS, "c_set_maxfps")
 
 // Renderer:
+X(MSG_R_SET_WIDTH, "r_set_height")
+X(MSG_R_SET_HEIGHT, "r_set_width")
+X(MSG_R_SET_FULLSCREEN, "r_set_fullscreen")
 X(MSG_R_SET_FOV, "r_set_fov")
 X(MSG_R_REINIT, "r_reinit")
 

@@ -41,8 +41,12 @@ Screen::Screen(Game::Client* client, int width, int height, bool fullscreen) thr
         throw Core::CriticalError("Failed to initialize OpenGL extension wrangler");
     }
 
+    SDL_WM_SetCaption("Solid Descent Engine Demo", "SolidDescent");
     set_shading();
 
+    listen(Core::MSG_R_SET_WIDTH);
+    listen(Core::MSG_R_SET_HEIGHT);
+    listen(Core::MSG_R_SET_FULLSCREEN);
     listen(Core::MSG_R_SET_FOV);
     listen(Core::MSG_R_REINIT);
 }
@@ -72,6 +76,7 @@ void Screen::draw() {
     glTranslatef(-cam->x, -cam->y, -cam->z);
 
     draw_world();
+    draw_2d();
 
     SDL_GL_SwapBuffers();
 }
@@ -79,12 +84,25 @@ void Screen::draw() {
 
 void Screen::callback(Core::Message* msg) {
     switch (msg->type) {
+        case Core::MSG_R_SET_WIDTH:
+            this->width = *((int*) (msg->data));
+            break;
+
+        case Core::MSG_R_SET_HEIGHT:
+            this->height = *((int*) (msg->data));
+            break;
+
+        case Core::MSG_R_SET_FULLSCREEN:
+            this->fullscreen = (*((bool*) (msg->data)));
+            break;
+
         case Core::MSG_R_SET_FOV:
             set_fov(*((int*) (msg->data)));
             break;
 
         case Core::MSG_R_REINIT:
             set_video_mode(width, height, 0, fullscreen);
+            set_shading(); // OpenGL context gets reset on Windows, so reinitialize
             break;
 
         default:
@@ -106,7 +124,8 @@ void Screen::draw_world() {
 }
 
 
-void Screen::draw_2d() {}
+void Screen::draw_2d() {
+}
 
 
 // Change the screen geometry and fullscreen mode
@@ -185,6 +204,7 @@ void Screen::set_projection(int fov, double near, double far) {
     glFrustum(-right, right, -top, top, near, far);
 
     glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 }
 
 

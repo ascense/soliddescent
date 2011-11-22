@@ -37,6 +37,13 @@ Engine::Engine() {
     frame_time = SDL_GetTicks();
     listen(MSG_C_SET_MAXFPS);
 
+    /*
+    post(MSG_R_SET_WIDTH, 1680);
+    post(MSG_R_SET_HEIGHT, 1050);
+    post(MSG_R_SET_FULLSCREEN, true);
+    post(MSG_R_REINIT);
+    */
+
     post(MSG_R_SET_FOV, 85);
     post(MSG_C_SET_MAXFPS, 125);
     post(MSG_G_SET_SENS, 5.0f);
